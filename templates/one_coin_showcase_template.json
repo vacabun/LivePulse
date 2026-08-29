@@ -1,0 +1,74 @@
+{
+  "version": "2.0",
+  "festival": {
+    "name": "ワンコインショーケース",
+    "venue": "Spotify O-WEST",
+    "date": "2026-09-05",
+    "openTime": "12:00",
+    "startTime": "12:30",
+    "endTime": "15:25",
+    "description": "ワンコインショーケース @ Spotify O-WEST (開場12:00 / 開演12:30)"
+  },
+  "lives": [
+    {
+      "id": "onecoin_live_1",
+      "groupName": "Mirror,Mirror",
+      "stage": "Spotify O-WEST 主舞台",
+      "startTime": "12:30",
+      "endTime": "12:55",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": true
+    },
+    {
+      "id": "onecoin_live_2",
+      "groupName": "AKANECLUB.",
+      "stage": "Spotify O-WEST 主舞台",
+      "startTime": "12:55",
+      "endTime": "13:20",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": true
+    },
+    {
+      "id": "onecoin_live_3",
+      "groupName": "かすみ草とステラ",
+      "stage": "Spotify O-WEST 主舞台",
+      "startTime": "13:20",
+      "endTime": "13:45",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": true
+    }
+  ],
+  "tokutenkais": [
+    {
+      "id": "onecoin_tokuten_1",
+      "groupName": "Mirror,Mirror",
+      "venue": "Spotify O-WEST",
+      "tableArea": "",
+      "startTime": "13:55",
+      "endTime": "15:25",
+      "description": "終演後物販・特典会",
+      "isStarred": true
+    },
+    {
+      "id": "onecoin_tokuten_2",
+      "groupName": "AKANECLUB.",
+      "venue": "Spotify O-WEST",
+      "tableArea": "",
+      "startTime": "13:55",
+      "endTime": "15:25",
+      "description": "終演後物販・特典会",
+      "isStarred": true
+    },
+    {
+      "id": "onecoin_tokuten_3",
+      "groupName": "かすみ草とステラ",
+      "venue": "Spotify O-WEST",
+      "tableArea": "",
+      "startTime": "13:55",
+      "endTime": "15:25",
+      "description": "終演後物販・特典会",
+      "isStarred": true
+    }
+  ],
+  "otherEvents": []
+}
