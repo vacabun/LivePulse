@@ -296,8 +296,53 @@ body {
   border-color: var(--border-accent);
 }
 
+/* Language Switcher Settings Card */
+.lang-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.lang-btn-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.lang-btn-card:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-subtle-hover);
+  transform: translateY(-1px);
+}
+
+.lang-btn-card.active {
+  background: rgba(236, 72, 153, 0.14);
+  border-color: var(--cat-live);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(236, 72, 153, 0.2);
+}
+
+.lang-flag {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.lang-name {
+  font-weight: 600;
+}
+
 /* ==========================================================================
-   PERSISTENT BOTTOM NAVIGATION BAR (三大页签)
+   PERSISTENT BOTTOM NAVIGATION BAR (Icon-Only Flat Minimalism)
    ========================================================================== */
 
 .bottom-nav-bar {
@@ -313,28 +358,27 @@ body {
   border-top: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 2.5rem;
   padding: 0 1rem;
   padding-bottom: env(safe-area-inset-bottom);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
 }
 
 .nav-tab-item {
-  flex: 1;
-  max-width: 160px;
-  height: 48px;
+  width: 58px;
+  height: 42px;
   border-radius: 12px;
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
+  padding: 0;
 }
 
 .nav-tab-item:hover {
@@ -343,24 +387,22 @@ body {
 }
 
 .nav-tab-item.active {
-  color: #ffffff;
-  background: rgba(236, 72, 153, 0.12);
-  border: 1px solid rgba(236, 72, 153, 0.3);
-}
-
-.nav-tab-item .tab-icon {
-  font-size: 1.25rem;
-  line-height: 1;
-}
-
-.nav-tab-item .tab-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-.nav-tab-item.active .tab-label {
   color: var(--cat-live);
+  background: rgba(236, 72, 153, 0.12);
+  border-color: rgba(236, 72, 153, 0.35);
+  box-shadow: 0 2px 10px rgba(236, 72, 153, 0.15);
+}
+
+.nav-tab-item .tab-svg-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2;
+  transition: transform 0.2s ease, stroke-width 0.2s ease;
+}
+
+.nav-tab-item.active .tab-svg-icon {
+  transform: scale(1.1);
+  stroke-width: 2.3;
 }
 
 /* Page View Containers */
@@ -1680,6 +1722,102 @@ body {
 
 .import-radio-label input[type="radio"] { accent-color: var(--cat-live); cursor: pointer; }
 .maintenance-buttons { display: flex; gap: 0.75rem; }
+
+/* Privacy Policy & Legal Disclaimer Card (Collapsible) */
+.privacy-disclaimer-card {
+  border-color: rgba(147, 51, 234, 0.25);
+  background: linear-gradient(180deg, var(--bg-surface-glass) 0%, rgba(20, 24, 39, 0.85) 100%);
+}
+
+.policy-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  outline: none;
+}
+
+.policy-summary-header::-webkit-details-marker {
+  display: none;
+}
+
+.policy-chevron {
+  color: var(--text-muted);
+  transition: transform var(--transition-normal);
+  flex-shrink: 0;
+}
+
+details[open].privacy-disclaimer-card .policy-chevron {
+  transform: rotate(180deg);
+  color: var(--cat-live);
+}
+
+.policy-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.policy-lang-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem;
+  border-radius: 12px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+}
+
+.policy-lang-block.ko-block {
+  border-color: rgba(236, 72, 153, 0.3);
+  background: rgba(236, 72, 153, 0.04);
+}
+
+.policy-lang-block.en-block {
+  border-color: rgba(59, 130, 246, 0.25);
+  background: rgba(59, 130, 246, 0.04);
+}
+
+.policy-lang-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.policy-item h4 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.policy-item p {
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.policy-item p strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
 
 /* ==========================================================================
    Modals & Bottom Sheets Common

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="100%" stop-color="#171e31" />
+    </linearGradient>
+    <linearGradient id="liveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f43f5e" />
+      <stop offset="50%" stop-color="#ec4899" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Base Rounded Container -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  <rect width="504" height="504" x="4" y="4" rx="124" fill="none" stroke="rgba(255, 255, 255, 0.12)" stroke-width="8" />
+
+  <!-- Pulse Waveform in Background -->
+  <path d="M 80 256 L 140 256 L 170 200 L 210 320 L 250 160 L 290 350 L 330 220 L 370 280 L 432 256" 
+        fill="none" 
+        stroke="url(#accentGrad)" 
+        stroke-width="16" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        opacity="0.35" />
+
+  <!-- Main Glowing Live Music Note Icon -->
+  <g filter="url(#glow)" transform="translate(110, 95) scale(1.2)">
+    <!-- Note Stem & Beam -->
+    <path d="M 75 200 C 75 225 55 245 30 245 C 13.5 245 0 231.5 0 215 C 0 198.5 13.5 185 30 185 C 40 185 48.5 190 55 197 L 55 45 C 55 35 63 26 73 24 L 185 2 C 197 -0.5 208 8.5 208 21 L 208 175 C 208 200 188 220 163 220 C 146.5 220 133 206.5 133 190 C 133 173.5 146.5 160 163 160 C 173 160 181.5 165 188 172 L 188 65 L 75 88 Z" 
+          fill="url(#liveGrad)" />
+  </g>
+
+  <!-- Sparkle Stars -->
+  <circle cx="390" cy="110" r="14" fill="#fbbf24" filter="url(#glow)" />
+  <circle cx="110" cy="380" r="10" fill="#f43f5e" filter="url(#glow)" />
+</svg>

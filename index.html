@@ -1,22 +1,31 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="ko" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#090d16">
-  <title>LivePulse - 音乐演出与特典会活动路线规划器</title>
+  <title>LivePulse</title>
   <meta name="description" content="专为音乐节、拼盘演出、偶像 Live 与并行特典会观众设计的排程与活动路线时间表，包含活动列表勾选、个人路线规划与模版导入导出。">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
 
   <!-- Google Fonts: Plus Jakarta Sans & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
 
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
   <!-- Toast Notification Container -->
@@ -28,7 +37,8 @@
       <!-- Brand / Logo -->
       <div class="brand-section">
         <div class="brand-logo music-logo">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 18V5l12-2v13"></path>
             <circle cx="6" cy="18" r="3"></circle>
             <circle cx="18" cy="16" r="3"></circle>
@@ -46,31 +56,34 @@
           <span id="themeIcon"></span>
         </button>
         <button id="newEventBtn" class="btn-primary desktop-only">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          <span>添加排程</span>
+          <span id="headerNewEventBtnText">添加排程</span>
         </button>
       </div>
     </div>
   </header>
 
   <!-- =========================================================================
-       PAGE 1: 🎪 活动列表 (Festivals & Joint Lives Directory)
+       PAGE 1: 🎸 活动列表 (Festivals & Joint Lives Directory)
        ========================================================================= -->
   <section id="page-events" class="app-page-view" style="display: none;">
     <div class="page-container">
       <div class="page-toolbar">
         <div class="page-title-group">
-          <h2>🎪 拼盘与演出活动列表</h2>
+          <h2>🎸 拼盘与演出活动列表</h2>
           <p>浏览所有活动时间表，或使用模版/文本快速导入新拼盘</p>
         </div>
         <div class="page-toolbar-actions">
-          <button id="openTemplateModalBtn" class="btn-primary" style="background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);">
+          <button id="openTemplateModalBtn" class="btn-primary"
+            style="background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);">
             <span>📝 模版库 & 文本智能导入</span>
           </button>
-          <button id="importFestivalBtn" class="btn-secondary" title="上传 JSON 导入活动" style="width: auto; padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 600; gap: 0.35rem;">
+          <button id="importFestivalBtn" class="btn-secondary" title="上传 JSON 导入活动"
+            style="width: auto; padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 600; gap: 0.35rem;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="7 10 12 15 17 10"></polyline>
@@ -89,10 +102,12 @@
           <p>出演：Mirror,Mirror / AKANECLUB. / かすみ草とステラ / 終演後物販·特典会</p>
         </div>
         <div class="featured-banner-actions">
-          <button id="quickSaveTemplateJsonBtn" class="btn-secondary" title="保存并下载此模版 JSON 文件" style="width: auto; padding: 0.45rem 0.85rem; font-size: 0.82rem; font-weight: 600;">
+          <button id="quickSaveTemplateJsonBtn" class="btn-secondary" title="保存并下载此模版 JSON 文件"
+            style="width: auto; padding: 0.45rem 0.85rem; font-size: 0.82rem; font-weight: 600;">
             💾 保存/下载模版 JSON
           </button>
-          <button id="quickImportFeaturedTemplateBtn" class="btn-primary" style="font-size: 0.82rem; padding: 0.45rem 0.95rem;">
+          <button id="quickImportFeaturedTemplateBtn" class="btn-primary"
+            style="font-size: 0.82rem; padding: 0.45rem 0.95rem;">
             ⚡ 一键导入此活动
           </button>
         </div>
@@ -136,23 +151,30 @@
         <div class="nav-controls">
           <div class="time-grid-zoom-controls" id="timeGridZoomControls" title="时间轴缩放">
             <button id="zoomOutBtn" class="btn-icon-xs" title="缩小时间轴">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
             </button>
             <span id="zoomLevelDisplay" class="zoom-level-text">100%</span>
             <button id="zoomInBtn" class="btn-icon-xs" title="放大时间轴">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
             </button>
           </div>
 
           <div class="date-navigator">
             <button id="prevBtn" class="btn-icon" title="前一周期" aria-label="前一周期">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"></polyline>
               </svg>
             </button>
             <span id="currentDateDisplay" class="current-month-display">2026年 08月</span>
             <button id="nextBtn" class="btn-icon" title="后一周期" aria-label="后一周期">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
             </button>
@@ -176,7 +198,7 @@
         <div class="festival-filter-group">
           <div class="select-wrapper">
             <select id="parentEventSelect" class="parent-event-select" aria-label="筛选父活动">
-              <option value="all">🎪 全部活动 / 跨场总览</option>
+              <option value="all">🎸 全部活动 / 跨场总览</option>
               <!-- Injected dynamically -->
             </select>
           </div>
@@ -206,14 +228,16 @@
       <div class="calendar-card" id="calendarCard">
         <!-- 1. Month View Container -->
         <div id="monthViewContainer" class="calendar-view-panel">
-          <div class="calendar-weekdays-header">
+          <div class="calendar-weekdays-header" id="calendarWeekdaysHeader">
             <div class="weekday-title"><span class="full-label">周一</span><span class="short-label">一</span></div>
             <div class="weekday-title"><span class="full-label">周二</span><span class="short-label">二</span></div>
             <div class="weekday-title"><span class="full-label">周三</span><span class="short-label">三</span></div>
             <div class="weekday-title"><span class="full-label">周四</span><span class="short-label">四</span></div>
             <div class="weekday-title"><span class="full-label">周五</span><span class="short-label">五</span></div>
-            <div class="weekday-title weekend"><span class="full-label">周六</span><span class="short-label">六</span></div>
-            <div class="weekday-title weekend"><span class="full-label">周日</span><span class="short-label">日</span></div>
+            <div class="weekday-title weekend"><span class="full-label">周六</span><span class="short-label">六</span>
+            </div>
+            <div class="weekday-title weekend"><span class="full-label">周日</span><span class="short-label">日</span>
+            </div>
           </div>
           <div id="calendarMonthGrid" class="calendar-month-grid">
             <!-- 42 Month Cells -->
@@ -255,22 +279,55 @@
   <section id="page-settings" class="app-page-view" style="display: none;">
     <div class="page-container settings-page-container">
       <div class="page-title-group">
-        <h2>⚙️ 数据管理与系统设置</h2>
-        <p>导出个人活动日历、备份与恢复数据、配置偏好设置</p>
+        <h2 id="settingsTitleText">⚙️ 数据管理与系统设置</h2>
+        <p id="settingsDescText">导出个人活动日历、备份与恢复数据、配置偏好设置</p>
+      </div>
+
+      <!-- Language Selection Card -->
+      <div class="settings-card">
+        <h3 class="settings-card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span id="settingsLangCardTitle">표시 언어 (Language)</span>
+        </h3>
+        <div class="lang-buttons-grid" id="settingsLangButtonsGrid">
+          <button class="lang-btn-card active" data-lang="ko">
+            <span class="lang-flag">🇰🇷</span>
+            <span class="lang-name">한국어</span>
+          </button>
+          <button class="lang-btn-card" data-lang="ja">
+            <span class="lang-flag">🇯🇵</span>
+            <span class="lang-name">日本語</span>
+          </button>
+          <button class="lang-btn-card" data-lang="en">
+            <span class="lang-flag">🇺🇸</span>
+            <span class="lang-name">English</span>
+          </button>
+          <button class="lang-btn-card" data-lang="zh">
+            <span class="lang-flag">🇨🇳</span>
+            <span class="lang-name">简体中文</span>
+          </button>
+        </div>
       </div>
 
       <!-- Storage Status Card -->
       <div class="settings-card storage-status-banner">
         <div class="storage-status-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 12H2M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+            <path
+              d="M22 12H2M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z">
+            </path>
             <line x1="6" y1="16" x2="6.01" y2="16"></line>
             <line x1="10" y1="16" x2="10.01" y2="16"></line>
           </svg>
         </div>
         <div class="storage-status-info">
           <h4>浏览器本地缓存 (localStorage)</h4>
-          <p>已收录 <strong id="settingsFestivalCount">0</strong> 场演出活动，共 <strong id="settingsEventCount">0</strong> 条排程（约占用 <strong id="settingsSizeKB">0</strong> KB 空间）</p>
+          <p>已收录 <strong id="settingsFestivalCount">0</strong> 场演出活动，共 <strong id="settingsEventCount">0</strong>
+            条排程（约占用 <strong id="settingsSizeKB">0</strong> KB 空间）</p>
         </div>
       </div>
 
@@ -350,10 +407,66 @@
           </label>
         </div>
 
-        <button id="settingsConfirmImportBtn" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" disabled>
+        <button id="settingsConfirmImportBtn" class="btn-primary"
+          style="width: 100%; justify-content: center; margin-top: 0.5rem;" disabled>
           开始导入备份
         </button>
       </div>
+
+      <!-- Section: Privacy Policy & Disclaimer (한국어 먼저, 그 다음 English, 기본 접힘) -->
+      <details class="settings-card privacy-disclaimer-card">
+        <summary class="settings-card-title policy-summary-header">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>개인정보 처리방침 및 면책조항 (Privacy & Disclaimer)</span>
+          </div>
+          <svg class="policy-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </summary>
+        <div class="policy-container">
+          <!-- Korean Version (한국어) -->
+          <div class="policy-lang-block ko-block">
+            <div class="policy-lang-badge">🇰🇷 한국어 (Korean)</div>
+            <div class="policy-item">
+              <h4>🔒 개인정보 처리방침 (Privacy Policy)</h4>
+              <p>
+                <strong>LivePulse</strong>는 사용자의 개인정보를 전송하거나 수집하지 않습니다.
+                모든 공연 일정, 타임테이블, 즐겨찾기(참가 체크) 및 환경설정 데이터는 사용자의 웹 브라우저 로컬 저장소(<strong>localStorage</strong>)에 100% 로컬로만 안전하게 저장됩니다.
+                외부 서버와의 개인정보 통신이 전혀 없는 완전한 클라이언트 독립형 웹 애플리케이션입니다.
+              </p>
+            </div>
+            <div class="policy-item">
+              <h4>⚠️ 면책조항 및 안내사항 (Disclaimer & Notice)</h4>
+              <p>
+                본 서비스에서 제공되거나 사용자가 파싱하여 등록한 모든 타임테이블 및 아티스트 일정 정보는 개인적인 활동 동선 계획을 돕기 위한 <strong>참고용 자료</strong>입니다.
+                행사 주최 측의 사정(현장 지연, 타임테이블 변동, 출연 취소 등)으로 인한 실시간 변경 사항에 대해 본 서비스는 법적 책임을 지지 않으므로, 중요한 공연 및 특전회 시간은 반드시 <strong>공식 SNS(X) 및 주최사 웹사이트의 최신 공지</strong>를 확인하시기 바랍니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- English Version (English) -->
+          <div class="policy-lang-block en-block">
+            <div class="policy-lang-badge">🇺🇸 English</div>
+            <div class="policy-item">
+              <h4>🔒 Privacy Policy (100% Local Storage)</h4>
+              <p>
+                <strong>LivePulse</strong> is built with full privacy in mind. All schedules, festival lineups, itinerary selections, and user preferences remain 100% on your local device via browser <strong>localStorage</strong>.
+                No personal data, schedules, or tracking cookies are ever transmitted to or stored on external remote servers.
+              </p>
+            </div>
+            <div class="policy-item">
+              <h4>⚠️ Legal Disclaimer & Notice</h4>
+              <p>
+                All timetables and event information managed within this application are provided solely for personal scheduling and planning convenience.
+                LivePulse makes no warranties regarding the real-time accuracy of event schedules (including sudden organizer cancellations, delays, or stage shifts). Please always consult <strong>official event channels and organizer announcements</strong> for verified schedules.
+              </p>
+            </div>
+          </div>
+        </div>
+      </details>
 
       <!-- Section: Maintenance -->
       <div class="settings-card">
@@ -363,36 +476,47 @@
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
-          <span>数据维护</span>
+          <span>데이터 유지관리</span>
         </h3>
         <div class="maintenance-buttons">
-          <button id="settingsClearAllDataBtn" class="btn-danger" style="width: 100%; margin: 0; justify-content: center;">清空所有本地数据</button>
+          <button id="settingsClearAllDataBtn" class="btn-danger"
+            style="width: 100%; margin: 0; justify-content: center;">모든 로컬 데이터 삭제</button>
         </div>
       </div>
     </div>
   </section>
 
   <!-- =========================================================================
-       PERSISTENT BOTTOM NAVIGATION BAR (三大页签)
+       PERSISTENT BOTTOM NAVIGATION BAR (Icon-Only Flat Minimalism)
        ========================================================================= -->
   <nav class="bottom-nav-bar" id="bottomNavBar" role="navigation" aria-label="底部导航">
-    <button class="nav-tab-item" data-tab="events">
-      <span class="tab-icon">🎪</span>
-      <span class="tab-label">活动列表</span>
+    <button class="nav-tab-item" data-tab="events" title="活动列表" aria-label="活动列表">
+      <svg class="tab-svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 18H3M16 12H3M9 6H3"></path>
+        <circle cx="17" cy="18" r="3"></circle>
+        <path d="M20 18V6h3"></path>
+      </svg>
     </button>
-    <button class="nav-tab-item active" data-tab="myroute">
-      <span class="tab-icon">🗺️</span>
-      <span class="tab-label">活动路线</span>
+    <button class="nav-tab-item active" data-tab="myroute" title="活动路线" aria-label="活动路线">
+      <svg class="tab-svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
     </button>
-    <button class="nav-tab-item" data-tab="settings">
-      <span class="tab-icon">⚙️</span>
-      <span class="tab-label">设置与备份</span>
+    <button class="nav-tab-item" data-tab="settings" title="设置与备份" aria-label="设置与备份">
+      <svg class="tab-svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
     </button>
   </nav>
 
   <!-- Floating Action Button for Adding Event -->
   <button id="mobileFabBtn" class="mobile-fab" aria-label="添加排程" title="添加排程">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round">
       <line x1="12" y1="5" x2="12" y2="19"></line>
       <line x1="5" y1="12" x2="19" y2="12"></line>
     </svg>
@@ -431,11 +555,13 @@
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <label class="form-label" for="rawTimetableTextInput">活动通知 / 时间表文本</label>
-            <button type="button" id="parseTextBtn" class="btn-text-sm" style="color: var(--cat-live); border-color: var(--border-accent);">
+            <button type="button" id="parseTextBtn" class="btn-text-sm"
+              style="color: var(--cat-live); border-color: var(--border-accent);">
               ✨ 重新智能解析文本
             </button>
           </div>
-          <textarea id="rawTimetableTextInput" class="form-textarea" style="min-height: 120px; font-family: monospace; font-size: 0.85rem;" placeholder="粘贴活动公告文本，例如：
+          <textarea id="rawTimetableTextInput" class="form-textarea"
+            style="min-height: 120px; font-family: monospace; font-size: 0.85rem;" placeholder="粘贴活动公告文本，例如：
 ワンコインショーケース
 ○日程 9.5（土）
 ○会場 Spotify O-WEST
@@ -458,10 +584,12 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button id="saveTemplateJsonBtn" class="btn-cancel" style="display: inline-flex; align-items: center; gap: 4px;">
+        <button id="saveTemplateJsonBtn" class="btn-cancel"
+          style="display: inline-flex; align-items: center; gap: 4px;">
           💾 保存/下载模版 JSON
         </button>
-        <button id="importParsedTemplateBtn" class="btn-primary" style="display: inline-flex; align-items: center; gap: 4px;">
+        <button id="importParsedTemplateBtn" class="btn-primary"
+          style="display: inline-flex; align-items: center; gap: 4px;">
           📥 一键导入到我的活动列表
         </button>
       </div>
@@ -520,7 +648,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button id="addDayEventBtn" class="btn-primary" style="width: 100%; justify-content: center; font-size: 0.9rem;">
+        <button id="addDayEventBtn" class="btn-primary"
+          style="width: 100%; justify-content: center; font-size: 0.9rem;">
           + 添加该日排程
         </button>
       </div>
@@ -548,7 +677,8 @@
           <div class="form-row">
             <div class="form-group" style="grid-column: 1 / -1;">
               <label class="form-label" for="eventGroupNameInput">团体名 / 参演艺人 *</label>
-              <input type="text" id="eventGroupNameInput" class="form-input" placeholder="例如：Starry☆Sky / Mirror,Mirror" required>
+              <input type="text" id="eventGroupNameInput" class="form-input" placeholder="例如：Starry☆Sky / Mirror,Mirror"
+                required>
             </div>
           </div>
 
@@ -571,7 +701,8 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="eventParentInput">所属活动 / 拼盘名称 *</label>
-              <input type="text" id="eventParentInput" class="form-input" placeholder="例如：ワンコインショーケース" list="parentEventDatalist" required>
+              <input type="text" id="eventParentInput" class="form-input" placeholder="例如：ワンコインショーケース"
+                list="parentEventDatalist" required>
               <datalist id="parentEventDatalist"></datalist>
             </div>
             <div class="form-group">
@@ -623,4 +754,5 @@
   <!-- Scripts -->
   <script type="module" src="js/app.js"></script>
 </body>
+
 </html>

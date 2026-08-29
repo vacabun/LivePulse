@@ -1,6 +1,6 @@
 /**
  * Main Application Logic - LivePulse (3-Tab Music Live & Tokuten Planner)
- * Tab 1: 🎪 活动列表 (Festivals Directory & Structured Template / Smart Text Parser)
+ * Tab 1: 🎸 活动列表 (Festivals Directory & Structured Template / Smart Text Parser)
  * Tab 2: 🗺️ 活动路线 (My Itinerary & Overlap Timetable - Default)
  *   - 月视图：聚合展示大活动/拼盘标题及项目数
  *   - 日视图：类型、标题、时间单行水平紧凑展示
@@ -9,6 +9,7 @@
  */
 
 import { eventManager, CATEGORIES } from './events.js';
+import { i18n, SUPPORTED_LANGUAGES } from './i18n.js';
 
 const PRESET_TEMPLATES = {
   onecoin: {
@@ -107,6 +108,8 @@ class CalendarApp {
       headerSubtitle: document.getElementById('headerSubtitle'),
 
       // Global Header Actions
+      settingsLangButtonsGrid: document.getElementById('settingsLangButtonsGrid'),
+      calendarWeekdaysHeader: document.getElementById('calendarWeekdaysHeader'),
       themeToggleBtn: document.getElementById('themeToggleBtn'),
       themeIcon: document.getElementById('themeIcon'),
       toastContainer: document.getElementById('toastContainer'),
@@ -215,17 +218,281 @@ class CalendarApp {
 
   init() {
     this.applyTheme(this.theme);
+    this.applyLanguage(i18n.getLang(), false);
     this.updateZoomDisplay();
     this.renderCategoryChips();
     this.updateParentEventDropdown();
     this.switchTab('myroute');
     this.bindNavigationTabs();
     this.bindEvents();
+    this.bindLanguageEvents();
     this.bindZoomControls();
     this.bindTouchGestures();
     this.bindSettingsEvents();
     this.bindFestivalInspectEvents();
     this.bindTemplateModalEvents();
+  }
+
+  /* --------------------------------------------------------------------------
+     Internationalization (i18n) Engine
+     -------------------------------------------------------------------------- */
+  bindLanguageEvents() {
+    this.dom.settingsLangButtonsGrid?.addEventListener('click', (e) => {
+      const btn = e.target.closest('.lang-btn-card');
+      if (btn && btn.dataset.lang) {
+        this.applyLanguage(btn.dataset.lang);
+      }
+    });
+  }
+
+  applyLanguage(lang, reRender = true) {
+    i18n.setLang(lang);
+
+    // 1. Update settings language buttons active state
+    document.querySelectorAll('.lang-btn-card').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    // 2. Global Header & Action Buttons
+    if (this.dom.headerSubtitle) {
+      if (this.activeTab === 'events') this.dom.headerSubtitle.textContent = i18n.t('headerSubtitleEvents');
+      else if (this.activeTab === 'myroute') this.dom.headerSubtitle.textContent = i18n.t('headerSubtitleMyRoute');
+      else if (this.activeTab === 'settings') this.dom.headerSubtitle.textContent = i18n.t('headerSubtitleSettings');
+    }
+
+    const headerNewBtn = document.getElementById('headerNewEventBtnText');
+    if (headerNewBtn) headerNewBtn.textContent = i18n.t('btnAddEvent');
+
+    if (this.dom.themeToggleBtn) {
+      this.dom.themeToggleBtn.title = i18n.t('themeToggle');
+      this.dom.themeToggleBtn.setAttribute('aria-label', i18n.t('themeToggle'));
+    }
+
+    if (this.dom.mobileFabBtn) {
+      this.dom.mobileFabBtn.title = i18n.t('btnAddEvent');
+      this.dom.mobileFabBtn.setAttribute('aria-label', i18n.t('btnAddEvent'));
+    }
+
+    // 3. Tab 1: Events Directory Page
+    const page1Title = document.querySelector('#page-events .page-title-group h2');
+    if (page1Title) page1Title.textContent = i18n.t('eventsPageTitle');
+    const page1Desc = document.querySelector('#page-events .page-title-group p');
+    if (page1Desc) page1Desc.textContent = i18n.t('eventsPageDesc');
+
+    if (this.dom.openTemplateModalBtn) {
+      const sp = this.dom.openTemplateModalBtn.querySelector('span');
+      if (sp) sp.textContent = i18n.t('btnOpenTemplate');
+    }
+    if (this.dom.importFestivalBtn) {
+      const sp = this.dom.importFestivalBtn.querySelector('span');
+      if (sp) sp.textContent = i18n.t('btnUploadJson');
+      this.dom.importFestivalBtn.title = i18n.t('btnUploadJson');
+    }
+    const featTag = document.querySelector('.template-featured-banner .featured-tag');
+    if (featTag) featTag.textContent = i18n.t('featuredTag');
+    const featH3 = document.querySelector('.template-featured-banner h3');
+    if (featH3) featH3.textContent = i18n.t('featuredTitle');
+    const featP = document.querySelector('.template-featured-banner p');
+    if (featP) featP.textContent = i18n.t('featuredDesc');
+
+    if (this.dom.quickSaveTemplateJsonBtn) this.dom.quickSaveTemplateJsonBtn.textContent = i18n.t('quickDownloadTemplate');
+    if (this.dom.quickImportFeaturedTemplateBtn) this.dom.quickImportFeaturedTemplateBtn.textContent = i18n.t('quickImportTemplate');
+
+    // 4. Tab 2: My Route Timetable Page
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      const view = btn.dataset.view;
+      const fullLabel = btn.querySelector('.view-label-full');
+      const shortLabel = btn.querySelector('.view-label-short');
+      if (view === 'month') {
+        if (fullLabel) fullLabel.textContent = i18n.t('viewMonth');
+        if (shortLabel) shortLabel.textContent = i18n.t('viewMonthShort');
+      } else if (view === 'week') {
+        if (fullLabel) fullLabel.textContent = i18n.t('viewWeek');
+        if (shortLabel) shortLabel.textContent = i18n.t('viewWeekShort');
+      } else if (view === '3day') {
+        if (fullLabel) fullLabel.textContent = i18n.t('view3Day');
+        if (shortLabel) shortLabel.textContent = i18n.t('view3DayShort');
+      } else if (view === 'day') {
+        if (fullLabel) fullLabel.textContent = i18n.t('viewDay');
+        if (shortLabel) shortLabel.textContent = i18n.t('viewDayShort');
+      }
+    });
+
+    if (this.dom.zoomInBtn) this.dom.zoomInBtn.title = i18n.t('zoomIn');
+    if (this.dom.zoomOutBtn) this.dom.zoomOutBtn.title = i18n.t('zoomOut');
+    if (this.dom.prevBtn) {
+      this.dom.prevBtn.title = i18n.t('prevCycle');
+      this.dom.prevBtn.setAttribute('aria-label', i18n.t('prevCycle'));
+    }
+    if (this.dom.nextBtn) {
+      this.dom.nextBtn.title = i18n.t('nextCycle');
+      this.dom.nextBtn.setAttribute('aria-label', i18n.t('nextCycle'));
+    }
+    if (this.dom.todayBtn) this.dom.todayBtn.textContent = i18n.t('btnToday');
+
+    if (this.dom.myRouteBtnText) {
+      this.dom.myRouteBtnText.textContent = this.onlyStarred ? i18n.t('myRouteActive') : i18n.t('myRouteAll');
+    }
+    if (this.dom.myRouteBtn) {
+      this.dom.myRouteBtn.title = this.onlyStarred ? i18n.t('myRouteTitleActive') : i18n.t('myRouteTitleAll');
+    }
+
+    const statLabels = document.querySelectorAll('.calendar-meta-stats .stat-item span:first-child');
+    if (statLabels && statLabels.length >= 2) {
+      statLabels[0].textContent = i18n.t('statCurrentEvents');
+      statLabels[1].textContent = i18n.t('statTotal');
+    }
+
+    const swipeHint = document.querySelector('.mobile-swipe-hint span');
+    if (swipeHint) swipeHint.textContent = i18n.t('mobileSwipeHint');
+
+    // 5. Tab 3: Settings Page
+    const settingsTitle = document.getElementById('settingsTitleText');
+    if (settingsTitle) settingsTitle.textContent = i18n.t('settingsTitle');
+    const settingsDesc = document.getElementById('settingsDescText');
+    if (settingsDesc) settingsDesc.textContent = i18n.t('settingsDesc');
+    const settingsLangCard = document.getElementById('settingsLangCardTitle');
+    if (settingsLangCard) settingsLangCard.textContent = i18n.t('langCardTitle');
+
+    const storageTitle = document.querySelector('.storage-status-info h4');
+    if (storageTitle) storageTitle.textContent = i18n.t('storageTitle');
+
+    const exportSectionTitle = document.querySelector('.data-action-grid')?.closest('.settings-card')?.querySelector('.settings-card-title span');
+    if (exportSectionTitle) exportSectionTitle.textContent = i18n.t('exportCardTitle');
+
+    if (this.dom.settingsExportJsonBtn) {
+      const title = this.dom.settingsExportJsonBtn.querySelector('.action-card-text strong');
+      const desc = this.dom.settingsExportJsonBtn.querySelector('.action-card-text span');
+      if (title) title.textContent = i18n.t('exportJsonTitle');
+      if (desc) desc.textContent = i18n.t('exportJsonDesc');
+    }
+    if (this.dom.settingsExportIcsBtn) {
+      const title = this.dom.settingsExportIcsBtn.querySelector('.action-card-text strong');
+      const desc = this.dom.settingsExportIcsBtn.querySelector('.action-card-text span');
+      if (title) title.textContent = i18n.t('exportIcsTitle');
+      if (desc) desc.textContent = i18n.t('exportIcsDesc');
+    }
+
+    const importSectionTitle = document.querySelector('#settingsFileDropzone')?.closest('.settings-card')?.querySelector('.settings-card-title span');
+    if (importSectionTitle) importSectionTitle.textContent = i18n.t('importCardTitle');
+
+    if (this.dom.settingsDropzoneText) {
+      this.dom.settingsDropzoneText.innerHTML = i18n.t('dropzoneText');
+    }
+    const mergeLabel = document.querySelector('input[value="merge"] + span');
+    if (mergeLabel) mergeLabel.innerHTML = `<strong>${i18n.t('importModeMerge')}</strong>`;
+    const overwriteLabel = document.querySelector('input[value="overwrite"] + span');
+    if (overwriteLabel) overwriteLabel.innerHTML = `<strong>${i18n.t('importModeOverwrite')}</strong>`;
+    if (this.dom.settingsConfirmImportBtn) this.dom.settingsConfirmImportBtn.textContent = i18n.t('btnConfirmImport');
+
+    const maintenanceTitle = document.querySelector('.settings-card-title.danger span');
+    if (maintenanceTitle) maintenanceTitle.textContent = i18n.t('maintenanceCardTitle');
+    if (this.dom.settingsClearAllDataBtn) this.dom.settingsClearAllDataBtn.textContent = i18n.t('btnClearAllData');
+
+    // 6. Bottom Navigation Bar Tooltips & Labels
+    document.querySelectorAll('.nav-tab-item').forEach(tab => {
+      const tabKey = tab.dataset.tab;
+      if (tabKey === 'events') { tab.title = i18n.t('navEvents'); tab.setAttribute('aria-label', i18n.t('navEvents')); }
+      if (tabKey === 'myroute') { tab.title = i18n.t('navMyRoute'); tab.setAttribute('aria-label', i18n.t('navMyRoute')); }
+      if (tabKey === 'settings') { tab.title = i18n.t('navSettings'); tab.setAttribute('aria-label', i18n.t('navSettings')); }
+    });
+
+    // 7. Modals
+    // Template Modal
+    const templateModalTitle = document.querySelector('#templateModal .modal-header h2');
+    if (templateModalTitle) templateModalTitle.textContent = i18n.t('templateModalTitle');
+    const templateModalSubtitle = document.querySelector('#templateModal .festival-modal-subtitle');
+    if (templateModalSubtitle) templateModalSubtitle.textContent = i18n.t('templateModalSubtitle');
+    const presetLabel = document.querySelector('label[for="presetTemplateSelect"]');
+    if (presetLabel) presetLabel.textContent = i18n.t('labelPresetTemplate');
+    const rawTextLabel = document.querySelector('label[for="rawTimetableTextInput"]');
+    if (rawTextLabel) rawTextLabel.textContent = i18n.t('labelRawText');
+    if (this.dom.parseTextBtn) this.dom.parseTextBtn.textContent = i18n.t('btnReparseText');
+    if (this.dom.rawTimetableTextInput) this.dom.rawTimetableTextInput.placeholder = i18n.t('rawTextPlaceholder');
+    const previewHeaderH4 = document.querySelector('.parsed-preview-box .preview-header h4');
+    if (previewHeaderH4) previewHeaderH4.innerHTML = `${i18n.t('parsedPreviewTitle', { count: `<span id="parsedItemCount">${this.dom.parsedItemCount ? this.dom.parsedItemCount.textContent : '0'}</span>` })}`;
+    if (this.dom.saveTemplateJsonBtn) this.dom.saveTemplateJsonBtn.textContent = i18n.t('btnSaveTemplateJson');
+    if (this.dom.importParsedTemplateBtn) this.dom.importParsedTemplateBtn.textContent = i18n.t('btnImportParsedTemplate');
+
+    // Festival Inspect Modal
+    if (this.dom.festivalSelectAllBtn) this.dom.festivalSelectAllBtn.textContent = i18n.t('btnSelectAll');
+    if (this.dom.festivalDeselectAllBtn) this.dom.festivalDeselectAllBtn.textContent = i18n.t('btnDeselectAll');
+    if (this.dom.goToMyRouteFromInspectBtn) this.dom.goToMyRouteFromInspectBtn.textContent = i18n.t('btnGoToMyRoute');
+
+    // Day Detail Modal
+    if (this.dom.addDayEventBtn) this.dom.addDayEventBtn.textContent = i18n.t('btnAddDayEvent');
+
+    // Event Form Modal
+    const groupNameLabel = document.querySelector('label[for="eventGroupNameInput"]');
+    if (groupNameLabel) groupNameLabel.textContent = i18n.t('labelGroupName');
+    if (this.dom.eventGroupNameInput) this.dom.eventGroupNameInput.placeholder = i18n.t('groupNamePlaceholder');
+
+    const typeLabel = document.querySelector('label[for="eventTypeSelect"]');
+    if (typeLabel) typeLabel.textContent = i18n.t('labelEventType');
+    const optLive = document.querySelector('#eventTypeSelect option[value="live"]');
+    if (optLive) optLive.textContent = i18n.t('catLive');
+    const optTokuten = document.querySelector('#eventTypeSelect option[value="tokuten"]');
+    if (optTokuten) optTokuten.textContent = i18n.t('catTokuten');
+    const optOther = document.querySelector('#eventTypeSelect option[value="other"]');
+    if (optOther) optOther.textContent = i18n.t('catOther');
+
+    const dateLabel = document.querySelector('label[for="eventDateInput"]');
+    if (dateLabel) dateLabel.textContent = `${i18n.t('viewDay')} *`;
+
+    const parentLabel = document.querySelector('label[for="eventParentInput"]');
+    if (parentLabel) parentLabel.textContent = i18n.t('labelEventParent');
+    if (this.dom.eventParentInput) this.dom.eventParentInput.placeholder = i18n.t('parentEventPlaceholder');
+
+    const venueLabel = document.querySelector('label[for="eventVenueInput"]');
+    if (venueLabel) venueLabel.textContent = i18n.t('labelEventVenue');
+    if (this.dom.eventVenueInput) this.dom.eventVenueInput.placeholder = i18n.t('venuePlaceholder');
+
+    const startLabel = document.querySelector('label[for="eventStartTimeInput"]');
+    if (startLabel) startLabel.textContent = i18n.t('labelEventStartTime');
+    const endLabel = document.querySelector('label[for="eventEndTimeInput"]');
+    if (endLabel) endLabel.textContent = i18n.t('labelEventEndTime');
+
+    const tableAreaLabel = document.querySelector('label[for="eventTableAreaInput"]');
+    if (tableAreaLabel) tableAreaLabel.textContent = i18n.t('labelEventTableArea');
+    if (this.dom.eventTableAreaInput) this.dom.eventTableAreaInput.placeholder = i18n.t('tableAreaPlaceholder');
+
+    const starSpan = document.querySelector('.star-checkbox-label span');
+    if (starSpan) starSpan.textContent = i18n.t('labelEventStarred');
+
+    const descLabel = document.querySelector('label[for="eventDescInput"]');
+    if (descLabel) descLabel.textContent = i18n.t('labelEventDesc');
+    if (this.dom.eventDescInput) this.dom.eventDescInput.placeholder = i18n.t('descPlaceholder');
+
+    if (this.dom.deleteEventBtn) this.dom.deleteEventBtn.textContent = i18n.t('btnDeleteEvent');
+    if (this.dom.cancelEventModalBtn) this.dom.cancelEventModalBtn.textContent = i18n.t('btnCancel');
+    const saveEventBtn = document.getElementById('saveEventBtn');
+    if (saveEventBtn) saveEventBtn.textContent = i18n.t('btnSaveEvent');
+
+    // 8. Re-render dynamic elements
+    this.renderWeekdayHeaders();
+    this.renderCategoryChips();
+    this.updateParentEventDropdown();
+
+    if (reRender) {
+      this.renderFestivalsDirectory();
+      this.renderView();
+      this.renderSettingsStats();
+    }
+  }
+
+  renderWeekdayHeaders() {
+    if (!this.dom.calendarWeekdaysHeader) return;
+    const weekdays = i18n.t('weekdays');
+    const weekdaysShort = i18n.t('weekdaysShort');
+
+    this.dom.calendarWeekdaysHeader.innerHTML = '';
+    weekdays.forEach((name, idx) => {
+      const isWeekend = idx >= 5;
+      const div = document.createElement('div');
+      div.className = `weekday-title ${isWeekend ? 'weekend' : ''}`;
+      div.innerHTML = `<span class="full-label">${name}</span><span class="short-label">${weekdaysShort[idx]}</span>`;
+      this.dom.calendarWeekdaysHeader.appendChild(div);
+    });
   }
 
   /* --------------------------------------------------------------------------
@@ -241,9 +508,9 @@ class CalendarApp {
     });
 
     if (this.dom.headerSubtitle) {
-      if (tabId === 'events') this.dom.headerSubtitle.textContent = '拼盘与活动列表';
-      else if (tabId === 'myroute') this.dom.headerSubtitle.textContent = '我的活动路线时间表';
-      else if (tabId === 'settings') this.dom.headerSubtitle.textContent = '设置与数据中心';
+      if (tabId === 'events') this.dom.headerSubtitle.textContent = i18n.t('headerSubtitleEvents');
+      else if (tabId === 'myroute') this.dom.headerSubtitle.textContent = i18n.t('headerSubtitleMyRoute');
+      else if (tabId === 'settings') this.dom.headerSubtitle.textContent = i18n.t('headerSubtitleSettings');
     }
 
     this.dom.pageEvents.style.display = tabId === 'events' ? 'block' : 'none';
@@ -491,9 +758,9 @@ class CalendarApp {
 
     if (!parsed || totalCount === 0) {
       if (this.dom.parsedItemCount) this.dom.parsedItemCount.textContent = '0';
-      if (this.dom.parsedMetaSummary) this.dom.parsedMetaSummary.textContent = '未识别到有效时间段';
+      if (this.dom.parsedMetaSummary) this.dom.parsedMetaSummary.textContent = '';
       if (this.dom.parsedItemsList) {
-        this.dom.parsedItemsList.innerHTML = `<div class="empty-day-state" style="padding: 1rem;"><p>未能识别出时间格式（格式示例：12:30〜12:55 团体名）</p></div>`;
+        this.dom.parsedItemsList.innerHTML = `<div class="empty-day-state" style="padding: 1rem;"><p>${i18n.t('emptyEventsTitle')}</p></div>`;
       }
       if (this.dom.importParsedTemplateBtn) this.dom.importParsedTemplateBtn.disabled = true;
       if (this.dom.saveTemplateJsonBtn) this.dom.saveTemplateJsonBtn.disabled = true;
@@ -502,7 +769,7 @@ class CalendarApp {
 
     if (this.dom.parsedItemCount) this.dom.parsedItemCount.textContent = totalCount;
     if (this.dom.parsedMetaSummary) {
-      this.dom.parsedMetaSummary.textContent = `📅 ${parsed.festival.date} · 📍 ${parsed.festival.venue} (${parsed.festival.openTime ? '開場' + parsed.festival.openTime + ' / ' : ''}開演${parsed.festival.startTime} ~ 終演${parsed.festival.endTime})`;
+      this.dom.parsedMetaSummary.textContent = `📅 ${parsed.festival.date} · 📍 ${parsed.festival.venue} (${parsed.festival.openTime ? 'OPEN ' + parsed.festival.openTime + ' / ' : ''}START ${parsed.festival.startTime} ~ END ${parsed.festival.endTime})`;
     }
 
     if (this.dom.parsedItemsList) {
@@ -517,7 +784,7 @@ class CalendarApp {
             <strong>${this.escapeHtml(l.groupName)}</strong>
             <span style="font-size: 0.72rem; opacity: 0.8; margin-left: 6px;">🕒 ${l.startTime} ~ ${l.endTime}</span>
           </div>
-          <span class="time-event-type-badge">🎤 Live</span>
+          <span class="time-event-type-badge">${this.getTypeBadge('live')}</span>
         `;
         this.dom.parsedItemsList.appendChild(item);
       });
@@ -531,7 +798,7 @@ class CalendarApp {
             <strong>${this.escapeHtml(t.groupName)}</strong>
             <span style="font-size: 0.72rem; opacity: 0.8; margin-left: 6px;">🕒 ${t.startTime} ~ ${t.endTime}</span>
           </div>
-          <span class="time-event-type-badge">📸 特典会</span>
+          <span class="time-event-type-badge">${this.getTypeBadge('tokuten')}</span>
         `;
         this.dom.parsedItemsList.appendChild(item);
       });
@@ -545,7 +812,7 @@ class CalendarApp {
             <strong>${this.escapeHtml(o.title)}</strong>
             <span style="font-size: 0.72rem; opacity: 0.8; margin-left: 6px;">🕒 ${o.startTime} ~ ${o.endTime}</span>
           </div>
-          <span class="time-event-type-badge">🏷️ 其他</span>
+          <span class="time-event-type-badge">${this.getTypeBadge('other')}</span>
         `;
         this.dom.parsedItemsList.appendChild(item);
       });
@@ -557,24 +824,25 @@ class CalendarApp {
 
   saveParsedTemplateAsJsonFile() {
     if (!this.currentParsedTemplate) {
-      this.showToast('无可导出的有效模版数据', 'error');
+      this.showToast('No valid template data', 'error');
       return;
     }
     const jsonStr = JSON.stringify(this.currentParsedTemplate, null, 2);
     const safeName = (this.currentParsedTemplate.festival?.name || 'event_template').replace(/[\s\/\\]+/g, '_');
     this.downloadFile(jsonStr, `${safeName}_template.json`, 'application/json;charset=utf-8');
-    this.showToast(`已成功保存并下载模版「${this.currentParsedTemplate.festival?.name}」！`, 'success');
+    this.showToast(i18n.t('toastExportJson'), 'success');
   }
 
   importParsedTemplateDirectly() {
     if (!this.currentParsedTemplate) {
-      this.showToast('无可导入的有效排程', 'error');
+      this.showToast('No schedules to import', 'error');
       return;
     }
+    const totalCount = (this.currentParsedTemplate?.lives?.length || 0) + (this.currentParsedTemplate?.tokutenkais?.length || 0) + (this.currentParsedTemplate?.otherEvents?.length || 0);
     const jsonStr = JSON.stringify(this.currentParsedTemplate);
     const result = eventManager.importFromJSON(jsonStr, 'merge');
     if (result.success) {
-      this.showToast(`已成功导入「${this.currentParsedTemplate.festival.name}」！`, 'success');
+      this.showToast(i18n.t('toastImportTemplateSuccess', { name: this.currentParsedTemplate.festival.name, count: totalCount }), 'success');
       this.updateParentEventDropdown();
       this.closeTemplateModal();
       this.renderFestivalsDirectory();
@@ -613,10 +881,11 @@ class CalendarApp {
 
     this.dom.quickImportFeaturedTemplateBtn?.addEventListener('click', () => {
       const parsed = this.parseTimetableText(PRESET_TEMPLATES.onecoin.rawText);
+      const totalCount = (parsed?.lives?.length || 0) + (parsed?.tokutenkais?.length || 0) + (parsed?.otherEvents?.length || 0);
       const jsonStr = JSON.stringify(parsed);
       const res = eventManager.importFromJSON(jsonStr, 'merge');
       if (res.success) {
-        this.showToast('已成功一键导入「ワンコインショーケース」排程！', 'success');
+        this.showToast(i18n.t('toastImportTemplateSuccess', { name: 'ワンコインショーケース', count: totalCount }), 'success');
         this.updateParentEventDropdown();
         this.renderFestivalsDirectory();
         this.renderView();
@@ -642,7 +911,8 @@ class CalendarApp {
             <line x1="8" y1="2" x2="8" y2="6"></line>
             <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
-          <p>暂无收录的拼盘活动，点击上方「模版库 & 文本智能导入」快速添加新活动！</p>
+          <p><strong>${i18n.t('emptyEventsTitle')}</strong></p>
+          <p style="font-size: 0.8rem; margin-top: 4px; color: var(--text-muted);">${i18n.t('emptyEventsDesc')}</p>
         </div>
       `;
       return;
@@ -661,15 +931,15 @@ class CalendarApp {
             <div class="festival-meta-tags">
               <span class="meta-tag date-tag">📅 ${this.escapeHtml(fest.dateRange)}</span>
               <span class="meta-tag venue-tag">📍 ${this.escapeHtml(fest.venues)}</span>
-              <span class="meta-tag">👥 ${fest.groupCount} 组艺人</span>
+              <span class="meta-tag">👥 ${fest.groupCount} ${i18n.t('itemsCount')}</span>
             </div>
           </div>
         </div>
 
         <div class="festival-progress-box">
           <div class="progress-header">
-            <span>参加标记</span>
-            <span><strong>${fest.starredCount}</strong> / ${fest.totalEvents} 项 (${pct}%)</span>
+            <span>${i18n.t('starProgress')}</span>
+            <span><strong>${fest.starredCount}</strong> / ${fest.totalEvents} ${i18n.t('itemsCount')} (${pct}%)</span>
           </div>
           <div class="progress-bar-track">
             <div class="progress-bar-fill" style="width: ${pct}%"></div>
@@ -678,7 +948,7 @@ class CalendarApp {
 
         <div class="festival-card-actions">
           <button class="btn-inspect-schedule inspect-btn">
-            🔍 查看完整时间表 & 标记参加
+            🔍 ${i18n.t('btnInspectTimetable')}
           </button>
         </div>
       `;
@@ -703,11 +973,26 @@ class CalendarApp {
     if (this.dom.festivalInspectTitle) this.dom.festivalInspectTitle.textContent = parentEventName;
     if (this.dom.festivalInspectSubtitle) {
       const dates = Array.from(new Set(allEvents.map(e => e.date))).sort().join(', ');
-      this.dom.festivalInspectSubtitle.textContent = `包含 ${allEvents.length} 个排程 · 日期: ${dates}`;
+      this.dom.festivalInspectSubtitle.textContent = `${allEvents.length} ${i18n.t('itemsCount')} · ${dates}`;
     }
 
     this.renderFestivalInspectTimeline(allEvents);
     this.dom.festivalInspectModal.classList.add('active');
+  }
+
+  getStarStatusText(isStarred) {
+    const lang = i18n.getLang();
+    if (isStarred) {
+      if (lang === 'zh') return '⭐ 已标记参加';
+      if (lang === 'ja') return '⭐ 参加予定';
+      if (lang === 'ko') return '⭐ 참가 예정';
+      return '⭐ Attending';
+    } else {
+      if (lang === 'zh') return '标记参加';
+      if (lang === 'ja') return '参加する';
+      if (lang === 'ko') return '참가 선택';
+      return 'Attend';
+    }
   }
 
   renderFestivalInspectTimeline(events) {
@@ -719,10 +1004,10 @@ class CalendarApp {
       const type = evt.type || evt.category || 'live';
       row.className = `timeline-item-row ${evt.isStarred ? 'is-starred' : ''}`;
 
-      const typeBadge = (type === 'tokuten' ? '📸 特典会' : (type === 'live' ? '🎤 Live' : '🏷️ 其他'));
-      const timeDisplay = (evt.startTime || evt.endTime) ? `${evt.startTime || ''} ~ ${evt.endTime || ''}` : '全天';
+      const typeBadge = this.getTypeBadge(type);
+      const timeDisplay = (evt.startTime || evt.endTime) ? `${evt.startTime || ''} ~ ${evt.endTime || ''}` : i18n.t('allDay');
 
-      let metaInfo = `${evt.date || ''} · ${evt.venue || '主舞台'}`;
+      let metaInfo = `${evt.date || ''} · ${evt.venue || 'Main Stage'}`;
       if (evt.tableArea) metaInfo += ` · ${evt.tableArea}`;
 
       row.innerHTML = `
@@ -736,7 +1021,7 @@ class CalendarApp {
           ${evt.description ? `<div class="meta-line" style="color: var(--text-secondary);">${this.escapeHtml(evt.description)}</div>` : ''}
         </div>
         <button class="timeline-star-toggle ${evt.isStarred ? 'active' : ''}">
-          <span>${evt.isStarred ? '⭐ 已标记参加' : '标记参加'}</span>
+          <span>${this.getStarStatusText(evt.isStarred)}</span>
         </button>
       `;
 
@@ -746,8 +1031,8 @@ class CalendarApp {
         evt.isStarred = newStarred;
         row.classList.toggle('is-starred', newStarred);
         starBtn.classList.toggle('active', newStarred);
-        starBtn.querySelector('span').textContent = newStarred ? '⭐ 已标记参加' : '标记参加';
-        this.showToast(newStarred ? `已将「${evt.groupName}」标记为参加！` : `已取消参加「${evt.groupName}」`, 'info');
+        starBtn.querySelector('span').textContent = this.getStarStatusText(newStarred);
+        this.showToast(newStarred ? i18n.t('toastStarred', { group: evt.groupName || evt.title }) : i18n.t('toastUnstarred', { group: evt.groupName || evt.title }), 'info');
       });
 
       this.dom.festivalInspectTimeline.appendChild(row);
@@ -768,7 +1053,7 @@ class CalendarApp {
     this.dom.festivalSelectAllBtn?.addEventListener('click', () => {
       if (this.currentInspectingFestival) {
         eventManager.setFestivalAllStarred(this.currentInspectingFestival, true);
-        this.showToast(`已将「${this.currentInspectingFestival}」全部团体标记为参加！`, 'success');
+        this.showToast(i18n.t('toastAllStarred', { festival: this.currentInspectingFestival }), 'success');
         const allEvents = eventManager.getEventsByParent(this.currentInspectingFestival);
         this.renderFestivalInspectTimeline(allEvents);
       }
@@ -777,7 +1062,7 @@ class CalendarApp {
     this.dom.festivalDeselectAllBtn?.addEventListener('click', () => {
       if (this.currentInspectingFestival) {
         eventManager.setFestivalAllStarred(this.currentInspectingFestival, false);
-        this.showToast(`已取消勾选「${this.currentInspectingFestival}」的全部团体`, 'info');
+        this.showToast(i18n.t('toastAllDeselected', { festival: this.currentInspectingFestival }), 'info');
         const allEvents = eventManager.getEventsByParent(this.currentInspectingFestival);
         this.renderFestivalInspectTimeline(allEvents);
       }
@@ -841,7 +1126,7 @@ class CalendarApp {
     const pad = (n) => String(n).padStart(2, '0');
 
     if (this.dom.dateDisplay) {
-      this.dom.dateDisplay.textContent = `${year}年 ${pad(month)}月`;
+      this.dom.dateDisplay.textContent = i18n.formatMonthYear(year, month);
     }
 
     const firstDay = new Date(year, month - 1, 1);
@@ -972,7 +1257,7 @@ class CalendarApp {
       pill.title = `【${fest.name}】\n包含 ${fest.events.length} 项排程\n点击查看并标记参加`;
 
       pill.innerHTML = `
-        <span class="fest-pill-title">${starIcon}🎪 ${this.escapeHtml(fest.name)}</span>
+        <span class="fest-pill-title">${starIcon}🎸 ${this.escapeHtml(fest.name)}</span>
         <span class="fest-pill-count">${fest.events.length}项</span>
       `;
 
@@ -1015,23 +1300,24 @@ class CalendarApp {
     this.updateTimeGridHeaderTitle(viewDates);
 
     this.dom.timeGridHeader.innerHTML = `
-      <div class="time-grid-header-corner">时间</div>
+      <div class="time-grid-header-corner">🕒</div>
       <div class="time-grid-header-cols"></div>
     `;
     const headerColsContainer = this.dom.timeGridHeader.querySelector('.time-grid-header-cols');
 
-    const weekdayNames = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-    const shortWeekdayNames = ['日', '一', '二', '三', '四', '五', '六'];
+    const weekdays = i18n.t('weekdays');
+    const weekdaysShort = i18n.t('weekdaysShort');
 
     viewDates.forEach(d => {
       const dateStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
       const isToday = dateStr === todayStr;
-      const dayOfWeek = d.getDay();
+      const dayOfWeek = d.getDay(); // 0 is Sunday, 1 is Monday...
+      const weekdayIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
       const col = document.createElement('div');
       col.className = `time-grid-header-col ${isToday ? 'is-today' : ''}`;
       col.innerHTML = `
-        <span class="col-weekday"><span class="full-label">${weekdayNames[dayOfWeek]}</span><span class="short-label">${shortWeekdayNames[dayOfWeek]}</span></span>
+        <span class="col-weekday"><span class="full-label">${weekdays[weekdayIdx]}</span><span class="short-label">${weekdaysShort[weekdayIdx]}</span></span>
         <span class="col-daynum">${d.getDate()}</span>
       `;
       headerColsContainer.appendChild(col);
@@ -1214,9 +1500,9 @@ class CalendarApp {
     card.style.left = `calc(${colLeftPct}% + 2px)`;
     card.style.width = `calc(${colWidthPct}% - 4px)`;
 
-    const typeLabel = (type === 'tokuten' ? '📸 特典会' : (type === 'live' ? '🎤 Live' : '🏷️ 其他'));
-    const timeText = (evt.startTime || evt.endTime) ? `${evt.startTime || ''} - ${evt.endTime || ''}` : '全天';
-    const groupName = evt.groupName || evt.title || '参演团体';
+    const typeLabel = this.getTypeBadge(type);
+    const timeText = (evt.startTime || evt.endTime) ? `${evt.startTime || ''} - ${evt.endTime || ''}` : i18n.t('allDay');
+    const groupName = evt.groupName || evt.title || 'Live Event';
 
     let locationInfo = '';
     if (evt.venue) locationInfo += evt.venue;
@@ -1226,14 +1512,14 @@ class CalendarApp {
     card.innerHTML = `
       <div class="time-event-top-row">
         <div class="time-event-title">${this.escapeHtml(groupName)}</div>
-        <button class="star-toggle-btn ${evt.isStarred ? 'active' : ''}" title="${evt.isStarred ? '已标记参加 (在我的活动路线中)' : '标记参加 (加入我的活动路线)'}">
+        <button class="star-toggle-btn ${evt.isStarred ? 'active' : ''}" title="${evt.isStarred ? i18n.t('toastStarred', {group: groupName}) : i18n.t('labelEventStarred')}">
           ⭐
         </button>
       </div>
       <div class="time-event-time">🕒 ${timeText}</div>
       ${evt.parentEvent || locationInfo ? `
         <div class="time-event-meta-row">
-          ${evt.parentEvent ? `<span class="time-event-parent-badge">🎪 ${this.escapeHtml(evt.parentEvent)}</span>` : ''}
+          ${evt.parentEvent ? `<span class="time-event-parent-badge">🎸 ${this.escapeHtml(evt.parentEvent)}</span>` : ''}
           ${locationInfo ? `<span class="time-event-venue">📍 ${this.escapeHtml(locationInfo)}</span>` : ''}
         </div>
       ` : ''}
@@ -1246,7 +1532,7 @@ class CalendarApp {
     starBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const newStarred = eventManager.toggleStar(evt.id);
-      this.showToast(newStarred ? `已将「${groupName}」标记为参加！` : `已取消参加「${groupName}」`, 'info');
+      this.showToast(newStarred ? i18n.t('toastStarred', { group: groupName }) : i18n.t('toastUnstarred', { group: groupName }), 'info');
       this.renderView();
     });
 
@@ -1256,6 +1542,19 @@ class CalendarApp {
     });
 
     return card;
+  }
+
+  getTypeBadge(type) {
+    if (type === 'tokuten') return i18n.t('catTokutenBadge');
+    if (type === 'other') return i18n.t('catOtherBadge');
+    return i18n.t('catLiveBadge');
+  }
+
+  getCategoryName(catId) {
+    if (catId === 'live') return i18n.t('catLive');
+    if (catId === 'tokuten') return i18n.t('catTokuten');
+    if (catId === 'other') return i18n.t('catOther');
+    return i18n.t('catAll');
   }
 
   getViewDates() {
@@ -1358,13 +1657,24 @@ class CalendarApp {
     if (this.dom.settingsFestivalCount) this.dom.settingsFestivalCount.textContent = stats.festivalCount;
     if (this.dom.settingsEventCount) this.dom.settingsEventCount.textContent = stats.count;
     if (this.dom.settingsSizeKB) this.dom.settingsSizeKB.textContent = stats.sizeKB;
+
+    const storageTitle = document.querySelector('.storage-status-info h4');
+    if (storageTitle) storageTitle.textContent = i18n.t('storageTitle');
+    const storageP = document.querySelector('.storage-status-info p');
+    if (storageP) {
+      storageP.innerHTML = i18n.t('storageDesc', {
+        festivals: `<strong id="settingsFestivalCount">${stats.festivalCount}</strong>`,
+        events: `<strong id="settingsEventCount">${stats.count}</strong>`,
+        sizeKB: `<strong id="settingsSizeKB">${stats.sizeKB}</strong>`
+      });
+    }
   }
 
   resetSettingsDropzone() {
     this.stagedImportContent = null;
     this.stagedFileName = null;
     if (this.dom.settingsImportFileInput) this.dom.settingsImportFileInput.value = '';
-    if (this.dom.settingsDropzoneText) this.dom.settingsDropzoneText.innerHTML = '点击选择或将 <strong>.json</strong> 备份文件拖拽至此处';
+    if (this.dom.settingsDropzoneText) this.dom.settingsDropzoneText.innerHTML = i18n.t('dropzoneText');
     if (this.dom.settingsSelectedFileName) {
       this.dom.settingsSelectedFileName.style.display = 'none';
       this.dom.settingsSelectedFileName.textContent = '';
@@ -1460,7 +1770,7 @@ class CalendarApp {
 
     this.dom.settingsConfirmImportBtn?.addEventListener('click', () => {
       if (!this.stagedImportContent) {
-        this.showToast('请先选择有效的 .json 备份文件', 'error');
+        this.showToast('Please select a valid .json file first', 'error');
         return;
       }
 
@@ -1469,7 +1779,7 @@ class CalendarApp {
 
       const result = eventManager.importFromJSON(this.stagedImportContent, mode);
       if (result.success) {
-        this.showToast(result.message, 'success');
+        this.showToast(i18n.t('toastImportSuccess', { count: result.count }), 'success');
         this.updateParentEventDropdown();
         this.renderSettingsStats();
         this.resetSettingsDropzone();
@@ -1479,9 +1789,9 @@ class CalendarApp {
     });
 
     this.dom.settingsClearAllDataBtn?.addEventListener('click', () => {
-      if (confirm('【危险操作】确定要清空所有本地日程数据吗？此操作无法撤销。')) {
+      if (confirm(i18n.t('confirmClearAll'))) {
         eventManager.clearAllEvents();
-        this.showToast('所有本地排程已清空', 'info');
+        this.showToast(i18n.t('toastAllCleared'), 'info');
         this.updateParentEventDropdown();
         this.renderSettingsStats();
         this.renderFestivalsDirectory();
@@ -1494,7 +1804,7 @@ class CalendarApp {
      General Modal & Touch Handlers
      -------------------------------------------------------------------------- */
   openNewEventModal(prefilledDate = null, startTime = '14:00', endTime = '14:30') {
-    this.dom.modalTitle.textContent = '添加演出/特典会排程';
+    this.dom.modalTitle.textContent = i18n.t('modalTitleAdd');
     this.dom.eventIdInput.value = '';
     this.dom.eventForm.reset();
 
@@ -1513,7 +1823,7 @@ class CalendarApp {
   }
 
   openEditEventModal(evt) {
-    this.dom.modalTitle.textContent = '编辑排程';
+    this.dom.modalTitle.textContent = i18n.t('modalTitleEdit');
     this.dom.eventIdInput.value = evt.id;
     this.dom.eventGroupNameInput.value = evt.groupName || evt.title || '';
     this.dom.eventTypeSelect.value = evt.type || evt.category || 'live';
@@ -1543,8 +1853,8 @@ class CalendarApp {
       title: this.dom.eventGroupNameInput.value.trim(),
       type: this.dom.eventTypeSelect.value,
       category: this.dom.eventTypeSelect.value,
-      parentEvent: this.dom.eventParentInput.value.trim() || '拼盘活动',
-      venue: this.dom.eventVenueInput.value.trim() || '主舞台',
+      parentEvent: this.dom.eventParentInput.value.trim() || 'Live Festival',
+      venue: this.dom.eventVenueInput.value.trim() || 'Main Stage',
       tableArea: this.dom.eventTableAreaInput.value.trim(),
       date: this.dom.eventDateInput.value,
       startTime: this.dom.eventStartTimeInput.value,
@@ -1554,16 +1864,16 @@ class CalendarApp {
     };
 
     if (!eventData.groupName || !eventData.date) {
-      alert('请填写团体名称和演出日期！');
+      alert('Group name and date are required!');
       return;
     }
 
     if (id) {
       eventManager.updateEvent(id, eventData);
-      this.showToast(`已更新「${eventData.groupName}」的排程`, 'success');
+      this.showToast(i18n.t('toastEventSaved'), 'success');
     } else {
       eventManager.addEvent(eventData);
-      this.showToast(`已添加「${eventData.groupName}」的新排程！`, 'success');
+      this.showToast(i18n.t('toastEventSaved'), 'success');
     }
 
     this.updateParentEventDropdown();
@@ -1574,9 +1884,9 @@ class CalendarApp {
 
   handleDeleteEvent() {
     const id = this.dom.eventIdInput.value;
-    if (id && confirm('确定要删除此条排程吗？')) {
+    if (id && confirm(i18n.t('confirmDeleteEvent'))) {
       eventManager.deleteEvent(id);
-      this.showToast('排程已删除', 'info');
+      this.showToast(i18n.t('toastEventDeleted'), 'info');
       this.updateParentEventDropdown();
       this.closeEventModal();
       if (this.activeTab === 'events') this.renderFestivalsDirectory();
@@ -1586,8 +1896,7 @@ class CalendarApp {
 
   openDayDetailModal(dateStr) {
     this.selectedDate = dateStr;
-    const [y, m, d] = dateStr.split('-');
-    this.dom.dayDetailTitle.textContent = `${y}年${m}月${d}日 演出与特典清单`;
+    this.dom.dayDetailTitle.textContent = `${dateStr} ${i18n.t('dayDetailModalTitle')}`;
     
     const dayEvents = this.getFilteredEvents().filter(e => e.date === dateStr);
     dayEvents.sort((a, b) => (a.startTime || '00:00').localeCompare(b.startTime || '00:00'));
@@ -1603,7 +1912,7 @@ class CalendarApp {
             <line x1="8" y1="2" x2="8" y2="6"></line>
             <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
-          <p>当日暂无匹配的演出/特典排程</p>
+          <p>${i18n.t('emptyEventsTitle')}</p>
         </div>
       `;
     } else {
@@ -1615,9 +1924,9 @@ class CalendarApp {
         const cat = CATEGORIES[type] || CATEGORIES.live;
         const timeDisplay = (evt.startTime || evt.endTime) 
           ? `${evt.startTime || ''} ~ ${evt.endTime || ''}`
-          : '全天';
+          : i18n.t('allDay');
 
-        const typeBadge = (type === 'tokuten' ? '📸 特典会' : (type === 'live' ? '🎤 Live' : '🏷️ 其他'));
+        const typeBadge = this.getTypeBadge(type);
         const starBtnHtml = `
           <button class="star-toggle-btn ${evt.isStarred ? 'active' : ''}" style="margin-left: 6px;">
             ⭐
@@ -1637,10 +1946,10 @@ class CalendarApp {
               ${evt.venue ? `<span>· 📍 ${this.escapeHtml(evt.venue)}</span>` : ''}
               ${evt.tableArea ? `<span>· 🪑 ${this.escapeHtml(evt.tableArea)}</span>` : ''}
             </div>
-            ${evt.parentEvent ? `<div class="event-parent-tag">🎪 ${this.escapeHtml(evt.parentEvent)}</div>` : ''}
+            ${evt.parentEvent ? `<div class="event-parent-tag">🎸 ${this.escapeHtml(evt.parentEvent)}</div>` : ''}
             ${evt.description ? `<p>${this.escapeHtml(evt.description)}</p>` : ''}
           </div>
-          <button class="btn-text-sm edit-btn" style="margin-left:auto; align-self: center;">编辑</button>
+          <button class="btn-text-sm edit-btn" style="margin-left:auto; align-self: center;">Edit</button>
         `;
 
         item.querySelector('.star-toggle-btn').addEventListener('click', (e) => {
@@ -1669,7 +1978,7 @@ class CalendarApp {
     if (!this.dom.parentEventSelect) return;
     const parentEvents = eventManager.getParentEvents();
 
-    this.dom.parentEventSelect.innerHTML = '<option value="all">🎪 全部活动 / 跨场总览</option>';
+    this.dom.parentEventSelect.innerHTML = `<option value="all">${i18n.t('parentAll')}</option>`;
     parentEvents.forEach(pe => {
       const opt = document.createElement('option');
       opt.value = pe;
@@ -1701,7 +2010,7 @@ class CalendarApp {
       if (cat.id !== 'all') {
         dotHtml = `<span class="dot" style="background: ${cat.color}"></span>`;
       }
-      btn.innerHTML = `${dotHtml}<span>${cat.name}</span>`;
+      btn.innerHTML = `${dotHtml}<span>${this.getCategoryName(cat.id)}</span>`;
 
       btn.addEventListener('click', () => {
         this.selectedCategory = cat.id;
