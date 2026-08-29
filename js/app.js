@@ -54,7 +54,20 @@ OPEN12:00/START12:30
 class CalendarApp {
   constructor() {
     this.activeTab = 'myroute'; // 'events' | 'myroute' (default) | 'settings'
-    this.anchorDate = new Date();
+    
+    // Initialize anchorDate to the date of first event (or 2026-09-05)
+    const allEvents = eventManager.getAllEvents();
+    if (allEvents.length > 0 && allEvents[0].date) {
+      const [y, m, d] = allEvents[0].date.split('-').map(Number);
+      if (y && m && d) {
+        this.anchorDate = new Date(y, m - 1, d);
+      } else {
+        this.anchorDate = new Date(2026, 8, 5);
+      }
+    } else {
+      this.anchorDate = new Date(2026, 8, 5);
+    }
+
     this.currentView = 'month'; // 'month' | 'week' | '3day' | 'day'
     this.selectedCategory = 'all';
     this.selectedParentEvent = 'all';

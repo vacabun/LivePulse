@@ -4,7 +4,7 @@
  * for Structured Festival Templates, Group Names, Parent Events, Live/Tokutenkai Types, and My Rush Itinerary (Star).
  */
 
-const STORAGE_KEY = 'livepulse_schedules_v2';
+const STORAGE_KEY = 'livepulse_schedules_v3';
 
 export const CATEGORIES = {
   all: { id: 'all', name: '全部', color: '#6366f1', icon: '✨' },
@@ -14,269 +14,100 @@ export const CATEGORIES = {
 };
 
 /**
- * Generate sensible mock events based on dynamic current year and month
- * Demonstrates realistic Live and Tokutenkai parallel overlaps and multi-event rush planning!
+ * Default sample events: Only includes the standard ワンコインショーケース @ Spotify O-WEST
  */
 function generateInitialSampleEvents() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1; // 1-12
-  const pad = (n) => String(n).padStart(2, '0');
-
-  const formatD = (d) => `${year}-${pad(month)}-${pad(d)}`;
-  
-  const todayD = today.getDate();
-  const day1 = formatD(todayD);
-  const day2 = formatD(Math.min(28, todayD + 1));
-  const day3 = formatD(Math.min(28, todayD + 2));
-
+  const dateStr = '2026-09-05';
   return [
-    // Today: Super Idol Fes @ VAS 瓦肆 (Multi-group Live & Parallel Tokuten)
     {
-      id: 'live-101',
-      groupName: 'Starry☆Sky (星空少女)',
-      title: 'Starry☆Sky (星空少女)',
-      category: 'live',
-      type: 'live',
-      parentEvent: 'SUMMER IDOL FES 2026 @ 瓦肆 VAS',
-      venue: '瓦肆 1F 主舞台',
-      tableArea: '',
-      date: day1,
-      startTime: '13:30',
-      endTime: '14:00',
-      isStarred: true,
-      description: '新单曲首演！结束后 14:20 前往 B2 物贩区开展并行特典会。'
-    },
-    {
-      id: 'tokuten-101',
-      groupName: 'Starry☆Sky (星空少女)',
-      title: 'Starry☆Sky (星空少女)',
-      category: 'tokuten',
-      type: 'tokuten',
-      parentEvent: 'SUMMER IDOL FES 2026 @ 瓦肆 VAS',
-      venue: '瓦肆 B2 物贩特典区',
-      tableArea: '3号桌',
-      date: day1,
-      startTime: '14:20',
-      endTime: '15:30',
-      isStarred: true,
-      description: '并行特典会（拍立得合影/签名交流），前20名附赠限量生写。'
-    },
-    {
-      id: 'live-102',
-      groupName: 'CyberPulse (电音脉冲)',
-      title: 'CyberPulse (电音脉冲)',
-      category: 'live',
-      type: 'live',
-      parentEvent: 'SUMMER IDOL FES 2026 @ 瓦肆 VAS',
-      venue: '瓦肆 1F 主舞台',
-      tableArea: '',
-      date: day1,
-      startTime: '14:05',
-      endTime: '14:35',
-      isStarred: false,
-      description: '重低音 EDM 舞台，全场狂欢。'
-    },
-    {
-      id: 'tokuten-102',
-      groupName: 'CyberPulse (电音脉冲)',
-      title: 'CyberPulse (电音脉冲)',
-      category: 'tokuten',
-      type: 'tokuten',
-      parentEvent: 'SUMMER IDOL FES 2026 @ 瓦肆 VAS',
-      venue: '瓦肆 B2 物贩特典区',
-      tableArea: '5号桌',
-      date: day1,
-      startTime: '14:50',
-      endTime: '15:50',
-      isStarred: false,
-      description: '终演后物贩交流。'
-    },
-    {
-      id: 'live-103',
-      groupName: 'Lunar Mirage (月色幻影)',
-      title: 'Lunar Mirage (月色幻影)',
-      category: 'live',
-      type: 'live',
-      parentEvent: 'SUMMER IDOL FES 2026 @ 瓦肆 VAS',
-      venue: '瓦肆 1F 主舞台',
-      tableArea: '',
-      date: day1,
-      startTime: '14:40',
-      endTime: '15:15',
-      isStarred: true,
-      description: '压轴和风摇滚 Live，包含全场安可曲！'
-    },
-
-    // Today: RUSH EVENT 2 @ MAO Livehouse (Another Festival for Itinerary Planning)
-    {
-      id: 'other-101',
-      groupName: '【场地转场】瓦肆 ➔ MAO Livehouse',
-      title: '【场地转场】瓦肆 ➔ MAO Livehouse',
-      category: 'other',
-      type: 'other',
-      parentEvent: '跨场地交通行程',
-      venue: '地铁13号线 / 打车约20分钟',
-      tableArea: '',
-      date: day1,
-      startTime: '15:40',
-      endTime: '16:10',
-      isStarred: true,
-      description: '转场前往 MAO Livehouse 观看夜场演出。'
-    },
-    {
-      id: 'live-201',
-      groupName: 'Neon Blossom (霓虹樱花)',
-      title: 'Neon Blossom (霓虹樱花)',
-      category: 'live',
-      type: 'live',
-      parentEvent: 'ANISONG NIGHT 2026 @ MAO Livehouse',
-      venue: 'MAO 主厅',
-      tableArea: '',
-      date: day1,
-      startTime: '16:30',
-      endTime: '17:15',
-      isStarred: true,
-      description: '经典动漫神曲翻唱专场，高能连唱！'
-    },
-    {
-      id: 'tokuten-201',
-      groupName: 'Neon Blossom (霓虹樱花)',
-      title: 'Neon Blossom (霓虹樱花)',
-      category: 'tokuten',
-      type: 'tokuten',
-      parentEvent: 'ANISONG NIGHT 2026 @ MAO Livehouse',
-      venue: 'MAO 2F 休息区',
-      tableArea: 'A区 1号桌',
-      date: day1,
-      startTime: '17:30',
-      endTime: '19:00',
-      isStarred: true,
-      description: '终演后全体成员特典会，支持合影与手写板签名。'
-    },
-
-    // Day 2 Events: One Coin Showcase (September 5th or Day 2)
-    {
-      id: 'onecoin-live-1',
+      id: 'onecoin_live_1',
       groupName: 'Mirror,Mirror',
       title: 'Mirror,Mirror',
       category: 'live',
       type: 'live',
-      parentEvent: 'ワンコインショーケース @ Spotify O-WEST',
-      venue: 'Spotify O-WEST 主舞台',
+      parentEvent: 'ワンコインショーケース',
+      venue: 'Spotify O-WEST',
       tableArea: '',
-      date: day2,
+      date: dateStr,
       startTime: '12:30',
       endTime: '12:55',
       isStarred: true,
-      description: 'Live 舞台演出 25分钟'
+      description: 'Live 舞台演出 (25分钟)'
     },
     {
-      id: 'onecoin-live-2',
+      id: 'onecoin_live_2',
       groupName: 'AKANECLUB.',
       title: 'AKANECLUB.',
       category: 'live',
       type: 'live',
-      parentEvent: 'ワンコインショーケース @ Spotify O-WEST',
-      venue: 'Spotify O-WEST 主舞台',
+      parentEvent: 'ワンコインショーケース',
+      venue: 'Spotify O-WEST',
       tableArea: '',
-      date: day2,
+      date: dateStr,
       startTime: '12:55',
       endTime: '13:20',
       isStarred: true,
-      description: 'Live 舞台演出 25分钟'
+      description: 'Live 舞台演出 (25分钟)'
     },
     {
-      id: 'onecoin-live-3',
+      id: 'onecoin_live_3',
       groupName: 'かすみ草とステラ',
       title: 'かすみ草とステラ',
       category: 'live',
       type: 'live',
-      parentEvent: 'ワンコインショーケース @ Spotify O-WEST',
-      venue: 'Spotify O-WEST 主舞台',
+      parentEvent: 'ワンコインショーケース',
+      venue: 'Spotify O-WEST',
       tableArea: '',
-      date: day2,
+      date: dateStr,
       startTime: '13:20',
       endTime: '13:45',
       isStarred: true,
-      description: 'Live 舞台演出 25分钟'
+      description: 'Live 舞台演出 (25分钟)'
     },
     {
-      id: 'onecoin-tokuten-1',
+      id: 'onecoin_tokuten_1',
       groupName: 'Mirror,Mirror',
       title: 'Mirror,Mirror',
       category: 'tokuten',
       type: 'tokuten',
-      parentEvent: 'ワンコインショーケース @ Spotify O-WEST',
+      parentEvent: 'ワンコインショーケース',
       venue: 'Spotify O-WEST',
       tableArea: '',
-      date: day2,
+      date: dateStr,
       startTime: '13:55',
       endTime: '15:25',
       isStarred: true,
       description: '終演後物販・特典会 (拍立得合影/签名交流)'
     },
     {
-      id: 'onecoin-tokuten-2',
+      id: 'onecoin_tokuten_2',
       groupName: 'AKANECLUB.',
       title: 'AKANECLUB.',
       category: 'tokuten',
       type: 'tokuten',
-      parentEvent: 'ワンコインショーケース @ Spotify O-WEST',
+      parentEvent: 'ワンコインショーケース',
       venue: 'Spotify O-WEST',
       tableArea: '',
-      date: day2,
+      date: dateStr,
       startTime: '13:55',
       endTime: '15:25',
       isStarred: true,
       description: '終演後物販・特典会 (拍立得合影/签名交流)'
     },
     {
-      id: 'onecoin-tokuten-3',
+      id: 'onecoin_tokuten_3',
       groupName: 'かすみ草とステラ',
       title: 'かすみ草とステラ',
       category: 'tokuten',
       type: 'tokuten',
-      parentEvent: 'ワンコインショーケース @ Spotify O-WEST',
+      parentEvent: 'ワンコインショーケース',
       venue: 'Spotify O-WEST',
       tableArea: '',
-      date: day2,
+      date: dateStr,
       startTime: '13:55',
       endTime: '15:25',
       isStarred: true,
       description: '終演後物販・特典会 (拍立得合影/签名交流)'
-    },
-
-    // Day 3 Events
-    {
-      id: 'live-401',
-      groupName: 'Sweet Heart (甜蜜心愿)',
-      title: 'Sweet Heart (甜蜜心愿)',
-      category: 'live',
-      type: 'live',
-      parentEvent: '元气偶像拼盘祭 @ 摩登天空',
-      venue: 'Modern Sky LAB',
-      tableArea: '',
-      date: day3,
-      startTime: '14:00',
-      endTime: '14:40',
-      isStarred: true,
-      description: '两周年纪念特别演出。'
-    },
-    {
-      id: 'tokuten-401',
-      groupName: 'Sweet Heart (甜蜜心愿)',
-      title: 'Sweet Heart (甜蜜心愿)',
-      category: 'tokuten',
-      type: 'tokuten',
-      parentEvent: '元气偶像拼盘祭 @ 摩登天空',
-      venue: 'LAB 前厅物贩区',
-      tableArea: '2号桌',
-      date: day3,
-      startTime: '15:00',
-      endTime: '16:30',
-      isStarred: true,
-      description: '拍立得特典与两周年限定毛巾合影。'
     }
   ];
 }
