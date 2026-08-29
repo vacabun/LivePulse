@@ -1429,78 +1429,110 @@ body {
   flex-shrink: 0;
 }
 
-/* Day View: Single-Row Horizontal Compact Layout */
-.time-event-card.is-day-view {
-  padding: 2px 8px;
-  justify-content: center;
+/* Time Event Card: Multiline layout with Type badge in the last row */
+.time-event-card {
+  position: absolute;
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: 0.78rem;
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), z-index var(--transition-fast);
+  border-left: 4px solid transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 3px;
+  backdrop-filter: blur(8px);
 }
 
-.day-single-row-content {
+.time-event-top-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  justify-content: space-between;
+  gap: 6px;
 }
 
-.day-single-row-content .time-event-type-badge {
-  font-size: 0.72rem;
-  padding: 2px 6px;
-  flex-shrink: 0;
-}
-
-.day-single-row-content .time-event-title-inline {
+.time-event-title {
   font-weight: 800;
   font-size: 0.88rem;
+  line-height: 1.25;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.day-single-row-content .time-event-time-inline {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.day-single-row-content .time-event-venue-inline {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
-}
-
-.day-single-row-content .star-toggle-btn {
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-/* Week & 3-Day Multi-column Card elements */
-.time-event-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
-.time-event-type-badge { font-size: 0.65rem; font-weight: 700; padding: 1px 4px; border-radius: 4px; background: rgba(0, 0, 0, 0.25); display: inline-flex; align-items: center; }
-
 .star-toggle-btn {
   background: transparent;
   border: none;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   cursor: pointer;
   line-height: 1;
   padding: 0;
   filter: grayscale(1);
   transition: transform 0.15s ease, filter 0.15s ease;
+  flex-shrink: 0;
 }
 
-.star-toggle-btn.active { filter: grayscale(0); transform: scale(1.15); }
-.time-event-title { font-weight: 800; font-size: 0.82rem; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
-.time-event-time { font-size: 0.68rem; opacity: 0.9; font-weight: 600; margin-top: 2px; }
-.time-event-parent-badge { font-size: 0.65rem; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
-.time-event-venue { font-size: 0.65rem; opacity: 0.8; color: var(--text-muted); }
+.star-toggle-btn.active {
+  filter: grayscale(0);
+  transform: scale(1.15);
+}
+
+.time-event-time {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+
+.time-event-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.time-event-parent-badge {
+  font-size: 0.7rem;
+  color: var(--cat-live);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.time-event-venue {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.time-event-bottom-row {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  padding-top: 2px;
+}
+
+.time-event-type-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  display: inline-flex;
+  align-items: center;
+}
 
 /* ==========================================================================
    TAB 3: ⚙️ 设置与备份页面 (Settings Page)

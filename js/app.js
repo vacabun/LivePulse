@@ -1210,34 +1210,25 @@ class CalendarApp {
     if (evt.venue) locationInfo += evt.venue;
     if (evt.tableArea) locationInfo += ` · ${evt.tableArea}`;
 
-    // Day View: Single Row Horizontal Layout (类型, 标题, 时间在同一行显示)
-    if (isDayView) {
-      card.innerHTML = `
-        <div class="day-single-row-content">
-          <span class="time-event-type-badge">${typeLabel}</span>
-          <span class="time-event-title-inline">${this.escapeHtml(groupName)}</span>
-          <span class="time-event-time-inline">🕒 ${timeText}</span>
-          ${locationInfo ? `<span class="time-event-venue-inline">📍 ${this.escapeHtml(locationInfo)}</span>` : ''}
-          <button class="star-toggle-btn ${evt.isStarred ? 'active' : ''}" title="${evt.isStarred ? '已标记参加 (在我的活动路线中)' : '标记参加 (加入我的活动路线)'}">
-            ⭐
-          </button>
-        </div>
-      `;
-    } else {
-      // Week & 3-Day Views: Multi-line Compact Layout
-      card.innerHTML = `
-        <div class="time-event-header">
-          <span class="time-event-type-badge">${typeLabel}</span>
-          <button class="star-toggle-btn ${evt.isStarred ? 'active' : ''}" title="${evt.isStarred ? '已标记参加 (在我的活动路线中)' : '标记参加 (加入我的活动路线)'}">
-            ⭐
-          </button>
-        </div>
+    // Multiline Layout: Title + Star, Time, Location/Parent, and Type Badge in the last row
+    card.innerHTML = `
+      <div class="time-event-top-row">
         <div class="time-event-title">${this.escapeHtml(groupName)}</div>
-        <div class="time-event-time">${timeText}</div>
-        ${evt.parentEvent ? `<div class="time-event-parent-badge">📍 ${this.escapeHtml(evt.parentEvent)}</div>` : ''}
-        ${locationInfo ? `<div class="time-event-venue">${this.escapeHtml(locationInfo)}</div>` : ''}
-      `;
-    }
+        <button class="star-toggle-btn ${evt.isStarred ? 'active' : ''}" title="${evt.isStarred ? '已标记参加 (在我的活动路线中)' : '标记参加 (加入我的活动路线)'}">
+          ⭐
+        </button>
+      </div>
+      <div class="time-event-time">🕒 ${timeText}</div>
+      ${evt.parentEvent || locationInfo ? `
+        <div class="time-event-meta-row">
+          ${evt.parentEvent ? `<span class="time-event-parent-badge">🎪 ${this.escapeHtml(evt.parentEvent)}</span>` : ''}
+          ${locationInfo ? `<span class="time-event-venue">📍 ${this.escapeHtml(locationInfo)}</span>` : ''}
+        </div>
+      ` : ''}
+      <div class="time-event-bottom-row">
+        <span class="time-event-type-badge">${typeLabel}</span>
+      </div>
+    `;
 
     const starBtn = card.querySelector('.star-toggle-btn');
     starBtn.addEventListener('click', (e) => {
