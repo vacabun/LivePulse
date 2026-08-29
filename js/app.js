@@ -180,7 +180,6 @@ class CalendarApp {
       settingsDropzoneText: document.getElementById('settingsDropzoneText'),
       settingsSelectedFileName: document.getElementById('settingsSelectedFileName'),
       settingsConfirmImportBtn: document.getElementById('settingsConfirmImportBtn'),
-      settingsResetDemoBtn: document.getElementById('settingsResetDemoBtn'),
       settingsClearAllDataBtn: document.getElementById('settingsClearAllDataBtn'),
 
       // Event Modal (Create / Edit)
@@ -1479,21 +1478,14 @@ class CalendarApp {
       }
     });
 
-    this.dom.settingsResetDemoBtn?.addEventListener('click', () => {
-      if (confirm('确定要重置为示范拼盘演出数据吗？现有排程将被替换。')) {
-        eventManager.resetToDefault();
-        this.showToast('已恢复示范拼盘演出数据！', 'info');
-        this.updateParentEventDropdown();
-        this.renderSettingsStats();
-      }
-    });
-
     this.dom.settingsClearAllDataBtn?.addEventListener('click', () => {
       if (confirm('【危险操作】确定要清空所有本地日程数据吗？此操作无法撤销。')) {
         eventManager.clearAllEvents();
         this.showToast('所有本地排程已清空', 'info');
         this.updateParentEventDropdown();
         this.renderSettingsStats();
+        this.renderFestivalsDirectory();
+        this.renderView();
       }
     });
   }

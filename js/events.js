@@ -4,7 +4,7 @@
  * for Structured Festival Templates, Group Names, Parent Events, Live/Tokutenkai Types, and My Rush Itinerary (Star).
  */
 
-const STORAGE_KEY = 'livepulse_schedules_v3';
+const STORAGE_KEY = 'livepulse_schedules_v4';
 
 export const CATEGORIES = {
   all: { id: 'all', name: '全部', color: '#6366f1', icon: '✨' },
@@ -12,105 +12,6 @@ export const CATEGORIES = {
   tokuten: { id: 'tokuten', name: '特典会 (物贩/合影)', color: '#f59e0b', icon: '📸' },
   other: { id: 'other', name: '其他 (转场/入场)', color: '#06b6d4', icon: '🏷️' }
 };
-
-/**
- * Default sample events: Only includes the standard ワンコインショーケース @ Spotify O-WEST
- */
-function generateInitialSampleEvents() {
-  const dateStr = '2026-09-05';
-  return [
-    {
-      id: 'onecoin_live_1',
-      groupName: 'Mirror,Mirror',
-      title: 'Mirror,Mirror',
-      category: 'live',
-      type: 'live',
-      parentEvent: 'ワンコインショーケース',
-      venue: 'Spotify O-WEST',
-      tableArea: '',
-      date: dateStr,
-      startTime: '12:30',
-      endTime: '12:55',
-      isStarred: true,
-      description: 'Live 舞台演出 (25分钟)'
-    },
-    {
-      id: 'onecoin_live_2',
-      groupName: 'AKANECLUB.',
-      title: 'AKANECLUB.',
-      category: 'live',
-      type: 'live',
-      parentEvent: 'ワンコインショーケース',
-      venue: 'Spotify O-WEST',
-      tableArea: '',
-      date: dateStr,
-      startTime: '12:55',
-      endTime: '13:20',
-      isStarred: true,
-      description: 'Live 舞台演出 (25分钟)'
-    },
-    {
-      id: 'onecoin_live_3',
-      groupName: 'かすみ草とステラ',
-      title: 'かすみ草とステラ',
-      category: 'live',
-      type: 'live',
-      parentEvent: 'ワンコインショーケース',
-      venue: 'Spotify O-WEST',
-      tableArea: '',
-      date: dateStr,
-      startTime: '13:20',
-      endTime: '13:45',
-      isStarred: true,
-      description: 'Live 舞台演出 (25分钟)'
-    },
-    {
-      id: 'onecoin_tokuten_1',
-      groupName: 'Mirror,Mirror',
-      title: 'Mirror,Mirror',
-      category: 'tokuten',
-      type: 'tokuten',
-      parentEvent: 'ワンコインショーケース',
-      venue: 'Spotify O-WEST',
-      tableArea: '',
-      date: dateStr,
-      startTime: '13:55',
-      endTime: '15:25',
-      isStarred: true,
-      description: '終演後物販・特典会 (拍立得合影/签名交流)'
-    },
-    {
-      id: 'onecoin_tokuten_2',
-      groupName: 'AKANECLUB.',
-      title: 'AKANECLUB.',
-      category: 'tokuten',
-      type: 'tokuten',
-      parentEvent: 'ワンコインショーケース',
-      venue: 'Spotify O-WEST',
-      tableArea: '',
-      date: dateStr,
-      startTime: '13:55',
-      endTime: '15:25',
-      isStarred: true,
-      description: '終演後物販・特典会 (拍立得合影/签名交流)'
-    },
-    {
-      id: 'onecoin_tokuten_3',
-      groupName: 'かすみ草とステラ',
-      title: 'かすみ草とステラ',
-      category: 'tokuten',
-      type: 'tokuten',
-      parentEvent: 'ワンコインショーケース',
-      venue: 'Spotify O-WEST',
-      tableArea: '',
-      date: dateStr,
-      startTime: '13:55',
-      endTime: '15:25',
-      isStarred: true,
-      description: '終演後物販・特典会 (拍立得合影/签名交流)'
-    }
-  ];
-}
 
 class EventManager {
   constructor() {
@@ -123,28 +24,11 @@ class EventManager {
       if (data) {
         return JSON.parse(data);
       }
-      const legacyData = localStorage.getItem('event_pulse_schedules_v1');
-      if (legacyData) {
-        const parsed = JSON.parse(legacyData);
-        const migrated = parsed.map(e => ({
-          ...e,
-          groupName: e.groupName || e.title,
-          parentEvent: e.parentEvent || '常规演出活动',
-          venue: e.venue || '主舞台',
-          tableArea: e.tableArea || '',
-          isStarred: !!e.isStarred,
-          type: (e.category === 'meeting' ? 'tokuten' : (e.category === 'work' ? 'live' : 'other')),
-          category: (e.category === 'meeting' ? 'tokuten' : (e.category === 'work' ? 'live' : 'other'))
-        }));
-        this.saveToStorage(migrated);
-        return migrated;
-      }
     } catch (e) {
       console.warn('Failed to parse events from localStorage:', e);
     }
-    const initial = generateInitialSampleEvents();
-    this.saveToStorage(initial);
-    return initial;
+    // Default is empty: users import or create schedules on demand
+    return [];
   }
 
   saveToStorage(events) {
@@ -312,13 +196,6 @@ class EventManager {
     this.events = [];
     this.saveToStorage(this.events);
     return true;
-  }
-
-  resetToDefault() {
-    const initial = generateInitialSampleEvents();
-    this.events = initial;
-    this.saveToStorage(initial);
-    return initial;
   }
 
   getStorageStats() {
