@@ -6,10 +6,11 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#090d16">
   <title>LivePulse</title>
-  <meta name="description" content="专为音乐节、拼盘演出、偶像 Live 与并行特典会观众设计的排程与活动路线时间表，包含活动列表勾选、个人路线规划与模版导入导出。">
+  <meta name="description" content="专为音乐节、拼盘演出、偶像 Live 与并行特典会观众设计的活动与路线时间表，包含活动列表勾选、个人路线规划与模版导入导出。">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -23,7 +24,7 @@
     rel="stylesheet">
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2.5">
 </head>
 
 <body>
@@ -61,7 +62,7 @@
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          <span id="headerNewEventBtnText">添加排程</span>
+          <span id="headerNewEventBtnText">添加活动</span>
         </button>
       </div>
     </div>
@@ -75,40 +76,24 @@
       <div class="page-toolbar">
         <div class="page-title-group">
           <h2>🎸 拼盘与演出活动列表</h2>
-          <p>浏览所有活动时间表，或使用模版/文本快速导入新拼盘</p>
+          <p>浏览与管理所有活动时间表，支持从云端活动库同步或导入本地 JSON</p>
         </div>
         <div class="page-toolbar-actions">
-          <button id="openTemplateModalBtn" class="btn-primary"
-            style="background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);">
-            <span>📝 模版库 & 文本智能导入</span>
-          </button>
-          <button id="importFestivalBtn" class="btn-secondary" title="上传 JSON 导入活动"
-            style="width: auto; padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 600; gap: 0.35rem;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
+          <button id="openRepoHubBtn" class="btn-primary btn-toolbar-action">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <span>上传 JSON 文件</span>
+            <span id="btnRepoHubText">云端活动库</span>
           </button>
-        </div>
-      </div>
-
-      <!-- Quick Template Banner: One Coin Showcase -->
-      <div class="template-featured-banner">
-        <div class="featured-banner-content">
-          <span class="featured-tag">🔥 官方示例模版</span>
-          <h3>ワンコインショーケース @ Spotify O-WEST</h3>
-          <p>出演：Mirror,Mirror / AKANECLUB. / かすみ草とステラ / 終演後物販·特典会</p>
-        </div>
-        <div class="featured-banner-actions">
-          <button id="quickSaveTemplateJsonBtn" class="btn-secondary" title="保存并下载此模版 JSON 文件"
-            style="width: auto; padding: 0.45rem 0.85rem; font-size: 0.82rem; font-weight: 600;">
-            💾 保存/下载模版 JSON
-          </button>
-          <button id="quickImportFeaturedTemplateBtn" class="btn-primary"
-            style="font-size: 0.82rem; padding: 0.45rem 0.95rem;">
-            ⚡ 一键导入此活动
+          <button id="importFestivalBtn" class="btn-secondary btn-toolbar-action" title="上传 JSON 导入活动">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span id="btnUploadJsonText">上传 JSON</span>
           </button>
         </div>
       </div>
@@ -212,7 +197,7 @@
         <!-- Live Count Stats -->
         <div class="calendar-meta-stats">
           <div class="stat-item">
-            <span>当前排程:</span>
+            <span>当前活动:</span>
             <span id="viewEventsCount" class="stat-count">0</span>
           </div>
           <div class="stat-item">
@@ -327,7 +312,7 @@
         <div class="storage-status-info">
           <h4>浏览器本地缓存 (localStorage)</h4>
           <p>已收录 <strong id="settingsFestivalCount">0</strong> 场演出活动，共 <strong id="settingsEventCount">0</strong>
-            条排程（约占用 <strong id="settingsSizeKB">0</strong> KB 空间）</p>
+            项活动（约占用 <strong id="settingsSizeKB">0</strong> KB 空间）</p>
         </div>
       </div>
 
@@ -371,16 +356,44 @@
               <span>一键导入 iPhone / Mac / Google Calendar 开启演出提醒</span>
             </div>
           </button>
+
+          <button id="settingsDownloadTemplateBtn" class="data-action-card">
+            <div class="action-card-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </div>
+            <div class="action-card-text">
+              <strong id="settingsTemplateCardTitle">💾 下载活动配置模版 (JSON)</strong>
+              <span id="settingsTemplateCardDesc">下载官方标准示例配置文件（ワンコインショーケース），可直接填入新演出</span>
+            </div>
+          </button>
+
+          <button id="settingsOpenRepoHubBtn" class="data-action-card" style="border-color: rgba(59, 130, 246, 0.35); background: rgba(59, 130, 246, 0.05);">
+            <div class="action-card-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </div>
+            <div class="action-card-text">
+              <strong id="settingsRepoCardTitle">🌐 云端活动库 (GitHub Hub)</strong>
+              <span id="settingsRepoCardDesc">从官方推荐 (LivePulse-Schedule) 或自定义仓库浏览并一键同步演出活动</span>
+            </div>
+          </button>
         </div>
       </div>
 
       <!-- Section: Import Data -->
       <div class="settings-card">
         <h3 class="settings-card-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
           <span>导入日程数据 (JSON)</span>
         </h3>
@@ -399,7 +412,7 @@
         <div class="import-mode-group">
           <label class="import-radio-label">
             <input type="radio" name="settingsImportMode" value="merge" checked>
-            <span><strong>合并追加</strong>（保留现有日程，追加新活动排程）</span>
+            <span><strong>合并追加</strong>（保留现有日程，追加新活动）</span>
           </label>
           <label class="import-radio-label">
             <input type="radio" name="settingsImportMode" value="overwrite">
@@ -513,27 +526,18 @@
     </button>
   </nav>
 
-  <!-- Floating Action Button for Adding Event -->
-  <button id="mobileFabBtn" class="mobile-fab" aria-label="添加排程" title="添加排程">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-      stroke-linecap="round" stroke-linejoin="round">
-      <line x1="12" y1="5" x2="12" y2="19"></line>
-      <line x1="5" y1="12" x2="19" y2="12"></line>
-    </svg>
-  </button>
-
   <!-- =========================================================================
-       MODAL 1: 📝 模版库与文本智能解析导入弹窗
+       MODAL 0: 🌐 云端活动库 (Schedule Repository Hub)
        ========================================================================= -->
-  <div id="templateModal" class="modal-overlay" role="dialog" aria-modal="true">
-    <div class="modal-container template-modal">
+  <div id="repoModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-container repo-modal-container">
       <div class="bottom-sheet-handle"></div>
       <div class="modal-header">
         <div>
-          <h2>📝 活动模版库 & 文本智能解析</h2>
-          <p class="festival-modal-subtitle">选择精选活动模版或直接粘贴官方排程通知文本</p>
+          <h2 id="repoModalTitleText">🌐 云端活动库 (Schedule Repository)</h2>
+          <p class="festival-modal-subtitle" id="repoModalSubtitleText">从官方推荐或自定义 GitHub 仓库浏览并一键导入活动时间表</p>
         </div>
-        <button id="closeTemplateModalBtn" class="btn-icon" aria-label="关闭">
+        <button id="closeRepoModalBtn" class="btn-icon" aria-label="关闭">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -541,57 +545,62 @@
         </button>
       </div>
       <div class="modal-body">
-        <!-- Preset Templates Selector -->
-        <div class="form-group">
-          <label class="form-label" for="presetTemplateSelect">选择预置活动模版</label>
-          <select id="presetTemplateSelect" class="form-select">
-            <option value="onecoin">🌟 ワンコインショーケース @ Spotify O-WEST (Mirror,Mirror / かすみ草とステラ...)</option>
-            <option value="summeridol">🌴 SUMMER IDOL FES 2026 @ 瓦肆 VAS</option>
-            <option value="anisong">🎸 ANISONG NIGHT 2026 @ MAO Livehouse</option>
-          </select>
-        </div>
+        <!-- Repository Selector & Action Card -->
+        <div class="repo-toolbar-card">
+          <div class="repo-select-row">
+            <div class="repo-select-group">
+              <label for="repoSelectDropdown" class="repo-label" id="repoSelectLabel">选择资源库：</label>
+              <select id="repoSelectDropdown" class="form-select repo-dropdown">
+                <option value="vacabun/LivePulse-Schedule">🌟 官方仓库 (vacabun/LivePulse-Schedule)</option>
+              </select>
+            </div>
+            <div class="repo-actions-group">
+              <button id="addCustomRepoBtn" class="btn-secondary btn-icon-sm" title="添加自定义仓库" aria-label="添加自定义仓库">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+              <button id="refreshRepoBtn" class="btn-secondary btn-icon-sm" title="刷新活动列表">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 4v6h-6"></path>
+                  <path d="M1 20v-6h6"></path>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+              </button>
+              <a id="repoGithubLinkBtn" href="https://github.com/vacabun/LivePulse-Schedule" target="_blank" rel="noopener noreferrer" class="btn-secondary btn-icon-sm" title="在 GitHub 查看此仓库">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
 
-        <!-- Raw Text Box for Smart Parsing -->
-        <div class="form-group">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <label class="form-label" for="rawTimetableTextInput">活动通知 / 时间表文本</label>
-            <button type="button" id="parseTextBtn" class="btn-text-sm"
-              style="color: var(--cat-live); border-color: var(--border-accent);">
-              ✨ 重新智能解析文本
+          <!-- Search and Filter -->
+          <div class="repo-search-row">
+            <div class="repo-search-input-wrapper">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="repoSearchInput" class="form-input" placeholder="搜索活动名称、艺人、场地或日期...">
+            </div>
+            <button id="repoBatchImportBtn" class="btn-primary" style="white-space: nowrap; font-size: 0.82rem; padding: 0.5rem 1rem;" disabled>
+              <span id="btnBatchImportText">📥 批量导入所选活动 (0)</span>
             </button>
           </div>
-          <textarea id="rawTimetableTextInput" class="form-textarea"
-            style="min-height: 120px; font-family: monospace; font-size: 0.85rem;" placeholder="粘贴活动公告文本，例如：
-ワンコインショーケース
-○日程 9.5（土）
-○会場 Spotify O-WEST
-○タイムテーブル
-12:30〜12:55 Mirror,Mirror
-12:55〜13:20 AKANECLUB.
-13:20〜13:45 かすみ草とステラ
-13:55〜15:25 終演後物販・特典会"></textarea>
         </div>
 
-        <!-- Parsed Result Preview -->
-        <div class="parsed-preview-box">
-          <div class="preview-header">
-            <h4>解析结果预览 (<span id="parsedItemCount">0</span> 项排程)</h4>
-            <span id="parsedMetaSummary" class="parsed-meta-badge"></span>
-          </div>
-          <div id="parsedItemsList" class="parsed-items-list">
-            <!-- Injected by app.js -->
-          </div>
+        <!-- Events List Grid -->
+        <div id="repoEventsListContainer" class="repo-events-grid">
+          <!-- Dynamic loaded events -->
         </div>
       </div>
       <div class="modal-footer">
-        <button id="saveTemplateJsonBtn" class="btn-cancel"
-          style="display: inline-flex; align-items: center; gap: 4px;">
-          💾 保存/下载模版 JSON
-        </button>
-        <button id="importParsedTemplateBtn" class="btn-primary"
-          style="display: inline-flex; align-items: center; gap: 4px;">
-          📥 一键导入到我的活动列表
-        </button>
+        <div class="repo-footer-tip" id="repoFooterTipText">
+          💡 提示：从云端仓库导入的活动默认不勾选（未标记参加），导入后可在活动列表中自由选择想看的舞台。
+        </div>
+        <button class="btn-secondary" id="closeRepoModalFooterBtn">关闭</button>
       </div>
     </div>
   </div>
@@ -616,6 +625,13 @@
         <div class="festival-batch-actions">
           <button id="festivalSelectAllBtn" class="btn-text-sm">⭐ 全部标记参加</button>
           <button id="festivalDeselectAllBtn" class="btn-text-sm">取消全部</button>
+          <button id="festivalDeleteThisBtn" class="btn-danger-sm" style="margin-left: auto;" title="删除此活动拼盘">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span id="festivalDeleteThisBtnText">删除此拼盘</span>
+          </button>
         </div>
         <div id="festivalInspectTimeline" class="festival-timeline-list">
           <!-- Injected dynamically by app.js -->
@@ -650,7 +666,7 @@
       <div class="modal-footer">
         <button id="addDayEventBtn" class="btn-primary"
           style="width: 100%; justify-content: center; font-size: 0.9rem;">
-          + 添加该日排程
+          + 添加该日活动
         </button>
       </div>
     </div>
@@ -661,7 +677,7 @@
     <div class="modal-container">
       <div class="bottom-sheet-handle"></div>
       <div class="modal-header">
-        <h2 id="modalTitle">添加排程</h2>
+        <h2 id="modalTitle">添加活动</h2>
         <button id="closeEventModalBtn" class="btn-icon" aria-label="关闭">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -684,7 +700,7 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label" for="eventTypeSelect">排程类别 *</label>
+              <label class="form-label" for="eventTypeSelect">活动类别 *</label>
               <select id="eventTypeSelect" class="form-select">
                 <option value="live">🎤 Live (舞台演出)</option>
                 <option value="tokuten">📸 特典会 (物贩/合影)</option>
@@ -737,22 +753,22 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="eventDescInput">排程备注 (限定周边/曲目/注意事项)</label>
+            <label class="form-label" for="eventDescInput">活动备注 (限定周边/曲目/注意事项)</label>
             <textarea id="eventDescInput" class="form-textarea" placeholder="例如：新单曲首发，结束后立即转至物贩区..."></textarea>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" id="deleteEventBtn" class="btn-danger" style="display: none;">删除排程</button>
+          <button type="button" id="deleteEventBtn" class="btn-danger" style="display: none;">删除活动</button>
           <button type="button" id="cancelEventModalBtn" class="btn-cancel">取消</button>
-          <button type="submit" id="saveEventBtn" class="btn-primary">保存排程</button>
+          <button type="submit" id="saveEventBtn" class="btn-primary">保存活动</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=2.3"></script>
 </body>
 
 </html>

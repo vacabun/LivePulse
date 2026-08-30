@@ -1,0 +1,958 @@
+{
+  "version": "2.0",
+  "festival": {
+    "name": "くさのねアイドルフェスティバル2026",
+    "venue": "草ぶえの丘",
+    "date": "2026-09-06",
+    "openTime": "10:00",
+    "startTime": "10:30",
+    "endTime": "20:30",
+    "description": "KUSANONE IDOL FESTIVAL 2026 @ 千葉県佐倉市草ぶえの丘 (千葉県佐倉市飯野820)"
+  },
+  "lives": [
+    {
+      "id": "kusanone_red_01",
+      "groupName": "Malcolm Mask McLaren",
+      "stage": "Red Gym STAGE",
+      "startTime": "10:30",
+      "endTime": "10:50",
+      "description": "FIRST SPROUT ACT (20分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_02",
+      "groupName": "AQ",
+      "stage": "Red Gym STAGE",
+      "startTime": "10:50",
+      "endTime": "11:20",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_03",
+      "groupName": "selfish",
+      "stage": "Red Gym STAGE",
+      "startTime": "11:30",
+      "endTime": "12:00",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_04",
+      "groupName": "HIBANA",
+      "stage": "Red Gym STAGE",
+      "startTime": "12:10",
+      "endTime": "12:40",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_05",
+      "groupName": "RAY",
+      "stage": "Red Gym STAGE",
+      "startTime": "12:50",
+      "endTime": "13:20",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_06",
+      "groupName": "Mirror,Mirror",
+      "stage": "Red Gym STAGE",
+      "startTime": "13:30",
+      "endTime": "14:00",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_07",
+      "groupName": "Quubi",
+      "stage": "Red Gym STAGE",
+      "startTime": "14:10",
+      "endTime": "14:40",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_08",
+      "groupName": "バンドじゃないもん!MAXX NAKAYOSHI",
+      "stage": "Red Gym STAGE",
+      "startTime": "14:50",
+      "endTime": "15:20",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_09",
+      "groupName": "YOLOZ",
+      "stage": "Red Gym STAGE",
+      "startTime": "15:30",
+      "endTime": "16:00",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_10",
+      "groupName": "タイトル未定",
+      "stage": "Red Gym STAGE",
+      "startTime": "16:10",
+      "endTime": "16:40",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_11",
+      "groupName": "SITUASION",
+      "stage": "Red Gym STAGE",
+      "startTime": "16:50",
+      "endTime": "17:20",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_12",
+      "groupName": "ジエメイ",
+      "stage": "Red Gym STAGE",
+      "startTime": "17:30",
+      "endTime": "18:00",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_13",
+      "groupName": "さとりモンスター",
+      "stage": "Red Gym STAGE",
+      "startTime": "18:10",
+      "endTime": "18:40",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_14",
+      "groupName": "Tohkei",
+      "stage": "Red Gym STAGE",
+      "startTime": "18:50",
+      "endTime": "19:20",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_red_15",
+      "groupName": "airattic",
+      "stage": "Red Gym STAGE",
+      "startTime": "19:30",
+      "endTime": "20:00",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_01",
+      "groupName": "Chalca",
+      "stage": "Blue Forest STAGE",
+      "startTime": "10:35",
+      "endTime": "11:05",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_02",
+      "groupName": "may in film",
+      "stage": "Blue Forest STAGE",
+      "startTime": "11:15",
+      "endTime": "11:45",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_03",
+      "groupName": "hakanai",
+      "stage": "Blue Forest STAGE",
+      "startTime": "11:55",
+      "endTime": "12:25",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_04",
+      "groupName": "限りなく白く",
+      "stage": "Blue Forest STAGE",
+      "startTime": "12:35",
+      "endTime": "13:05",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_05",
+      "groupName": "SOMOSOMO",
+      "stage": "Blue Forest STAGE",
+      "startTime": "13:15",
+      "endTime": "13:45",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_06",
+      "groupName": "BELLRING少女ハート",
+      "stage": "Blue Forest STAGE",
+      "startTime": "13:55",
+      "endTime": "14:25",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_07",
+      "groupName": "FOKALITE",
+      "stage": "Blue Forest STAGE",
+      "startTime": "14:35",
+      "endTime": "15:05",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_08",
+      "groupName": "二丁目の魁カミングアウト",
+      "stage": "Blue Forest STAGE",
+      "startTime": "15:15",
+      "endTime": "15:45",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_09",
+      "groupName": "NUANCE",
+      "stage": "Blue Forest STAGE",
+      "startTime": "15:55",
+      "endTime": "16:25",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_10",
+      "groupName": "I to U $CREAMing!!",
+      "stage": "Blue Forest STAGE",
+      "startTime": "16:35",
+      "endTime": "17:05",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_11",
+      "groupName": "Maison de Queen",
+      "stage": "Blue Forest STAGE",
+      "startTime": "17:15",
+      "endTime": "17:45",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_12",
+      "groupName": "美味しい曖昧",
+      "stage": "Blue Forest STAGE",
+      "startTime": "17:55",
+      "endTime": "18:25",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_13",
+      "groupName": "yumegiwa last girl",
+      "stage": "Blue Forest STAGE",
+      "startTime": "18:35",
+      "endTime": "19:05",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_blue_14",
+      "groupName": "PIGGS",
+      "stage": "Blue Forest STAGE",
+      "startTime": "19:15",
+      "endTime": "19:45",
+      "description": "Live 舞台演出 (30分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_01",
+      "groupName": "グデイ",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "10:45",
+      "endTime": "11:10",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_02",
+      "groupName": "美味しい水玉",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "11:10",
+      "endTime": "11:35",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_03",
+      "groupName": "ROY LIMITED GIRLFRIEND",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "11:35",
+      "endTime": "12:00",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_04",
+      "groupName": "AIWO",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "12:00",
+      "endTime": "12:25",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_05",
+      "groupName": "Finally",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "12:30",
+      "endTime": "12:55",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_06",
+      "groupName": "アストレイル",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "12:55",
+      "endTime": "13:20",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_07",
+      "groupName": "ponderosa may bloom",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "13:20",
+      "endTime": "13:45",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_08",
+      "groupName": "美味しい贖罪",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "13:45",
+      "endTime": "14:10",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_09",
+      "groupName": "AFTERS",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "14:15",
+      "endTime": "14:40",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_10",
+      "groupName": "XINXIN",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "14:40",
+      "endTime": "15:05",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_11",
+      "groupName": "Question.VI",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "15:05",
+      "endTime": "15:30",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_12",
+      "groupName": "猫の眼に宇宙",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "15:30",
+      "endTime": "15:55",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_13",
+      "groupName": "KAMAITACI",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "16:00",
+      "endTime": "16:25",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_14",
+      "groupName": "空想ロマンス",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "16:25",
+      "endTime": "16:50",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_15",
+      "groupName": "Payrin's",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "16:50",
+      "endTime": "17:15",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_16",
+      "groupName": "NEKIRU",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "17:15",
+      "endTime": "17:40",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_17",
+      "groupName": "雨模様のソラリス",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "17:45",
+      "endTime": "18:10",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_18",
+      "groupName": "Drawry.",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "18:10",
+      "endTime": "18:35",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_19",
+      "groupName": "月刊PAM",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "18:35",
+      "endTime": "19:00",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_orange_20",
+      "groupName": "YA'ABURNEE",
+      "stage": "Orange Shelter STAGE",
+      "startTime": "19:00",
+      "endTime": "19:25",
+      "description": "Live 舞台演出 (25分钟)",
+      "isStarred": false
+    }
+  ],
+  "tokutenkais": [
+    {
+      "id": "kusanone_tokuten_a01",
+      "groupName": "Malcolm Mask McLaren",
+      "venue": "草ぶえの丘",
+      "tableArea": "A卓",
+      "startTime": "11:30",
+      "endTime": "12:30",
+      "description": "特典会 (A卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_a02",
+      "groupName": "限りなく白く",
+      "venue": "草ぶえの丘",
+      "tableArea": "A卓",
+      "startTime": "13:50",
+      "endTime": "14:50",
+      "description": "特典会 (A卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_a03",
+      "groupName": "FOKALITE",
+      "venue": "草ぶえの丘",
+      "tableArea": "A卓",
+      "startTime": "15:50",
+      "endTime": "16:50",
+      "description": "特典会 (A卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_a04",
+      "groupName": "yumegiwa last girl",
+      "venue": "草ぶえの丘",
+      "tableArea": "A卓",
+      "startTime": "16:55",
+      "endTime": "17:55",
+      "description": "特典会 (A卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_a05",
+      "groupName": "Payrin's",
+      "venue": "草ぶえの丘",
+      "tableArea": "A卓",
+      "startTime": "18:00",
+      "endTime": "19:00",
+      "description": "特典会 (A卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_b01",
+      "groupName": "Chalca",
+      "venue": "草ぶえの丘",
+      "tableArea": "B卓",
+      "startTime": "11:50",
+      "endTime": "12:50",
+      "description": "特典会 (B卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_b02",
+      "groupName": "RAY",
+      "venue": "草ぶえの丘",
+      "tableArea": "B卓",
+      "startTime": "14:05",
+      "endTime": "15:05",
+      "description": "特典会 (B卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_b03",
+      "groupName": "XINXIN",
+      "venue": "草ぶえの丘",
+      "tableArea": "B卓",
+      "startTime": "15:50",
+      "endTime": "16:50",
+      "description": "特典会 (B卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_b04",
+      "groupName": "月刊PAM",
+      "venue": "草ぶえの丘",
+      "tableArea": "B卓",
+      "startTime": "16:55",
+      "endTime": "17:55",
+      "description": "特典会 (B卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_b05",
+      "groupName": "SITUASION",
+      "venue": "草ぶえの丘",
+      "tableArea": "B卓",
+      "startTime": "18:05",
+      "endTime": "19:05",
+      "description": "特典会 (B卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_c01",
+      "groupName": "グデイ",
+      "venue": "草ぶえの丘",
+      "tableArea": "C卓",
+      "startTime": "11:55",
+      "endTime": "12:55",
+      "description": "特典会 (C卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_c02",
+      "groupName": "アストレイル",
+      "venue": "草ぶえの丘",
+      "tableArea": "C卓",
+      "startTime": "14:05",
+      "endTime": "15:05",
+      "description": "特典会 (C卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_c03",
+      "groupName": "雨模様のソラリス",
+      "venue": "草ぶえの丘",
+      "tableArea": "C卓",
+      "startTime": "16:00",
+      "endTime": "17:00",
+      "description": "特典会 (C卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_c04",
+      "groupName": "Tohkei",
+      "venue": "草ぶえの丘",
+      "tableArea": "C卓",
+      "startTime": "17:10",
+      "endTime": "18:10",
+      "description": "特典会 (C卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_c05",
+      "groupName": "NEKIRU",
+      "venue": "草ぶえの丘",
+      "tableArea": "C卓",
+      "startTime": "18:25",
+      "endTime": "19:25",
+      "description": "特典会 (C卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_d01",
+      "groupName": "AQ",
+      "venue": "草ぶえの丘",
+      "tableArea": "D卓",
+      "startTime": "12:00",
+      "endTime": "13:00",
+      "description": "特典会 (D卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_d02",
+      "groupName": "SOMOSOMO",
+      "venue": "草ぶえの丘",
+      "tableArea": "D卓",
+      "startTime": "14:30",
+      "endTime": "15:30",
+      "description": "特典会 (D卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_d03",
+      "groupName": "Question.VI",
+      "venue": "草ぶえの丘",
+      "tableArea": "D卓",
+      "startTime": "16:10",
+      "endTime": "17:10",
+      "description": "特典会 (D卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_d04",
+      "groupName": "NUANCE",
+      "venue": "草ぶえの丘",
+      "tableArea": "D卓",
+      "startTime": "17:15",
+      "endTime": "18:15",
+      "description": "特典会 (D卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_d05",
+      "groupName": "Maison de Queen",
+      "venue": "草ぶえの丘",
+      "tableArea": "D卓",
+      "startTime": "18:30",
+      "endTime": "19:30",
+      "description": "特典会 (D卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_e01",
+      "groupName": "美味しい水玉",
+      "venue": "草ぶえの丘",
+      "tableArea": "E卓",
+      "startTime": "12:10",
+      "endTime": "13:10",
+      "description": "特典会 (E卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_e02",
+      "groupName": "Mirror,Mirror",
+      "venue": "草ぶえの丘",
+      "tableArea": "E卓",
+      "startTime": "14:45",
+      "endTime": "15:45",
+      "description": "特典会 (E卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_e03",
+      "groupName": "バンドじゃないもん!MAXX NAKAYOSHI",
+      "venue": "草ぶえの丘",
+      "tableArea": "E卓",
+      "startTime": "16:15",
+      "endTime": "17:15",
+      "description": "特典会 (E卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_e04",
+      "groupName": "YA'ABURNEE",
+      "venue": "草ぶえの丘",
+      "tableArea": "E卓",
+      "startTime": "17:20",
+      "endTime": "18:20",
+      "description": "特典会 (E卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_e05",
+      "groupName": "ジエメイ",
+      "venue": "草ぶえの丘",
+      "tableArea": "E卓",
+      "startTime": "18:45",
+      "endTime": "19:45",
+      "description": "特典会 (E卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_f01",
+      "groupName": "may in film",
+      "venue": "草ぶえの丘",
+      "tableArea": "F卓",
+      "startTime": "12:30",
+      "endTime": "13:30",
+      "description": "特典会 (F卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_f02",
+      "groupName": "美味しい贖罪",
+      "venue": "草ぶえの丘",
+      "tableArea": "F卓",
+      "startTime": "14:55",
+      "endTime": "15:55",
+      "description": "特典会 (F卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_f03",
+      "groupName": "美味しい曖昧",
+      "venue": "草ぶえの丘",
+      "tableArea": "F卓",
+      "startTime": "16:15",
+      "endTime": "17:15",
+      "description": "特典会 (F卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_f04",
+      "groupName": "タイトル未定",
+      "venue": "草ぶえの丘",
+      "tableArea": "F卓",
+      "startTime": "17:20",
+      "endTime": "18:20",
+      "description": "特典会 (F卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_g01",
+      "groupName": "ROY LIMITED GIRLFRIEND",
+      "venue": "草ぶえの丘",
+      "tableArea": "G卓",
+      "startTime": "12:45",
+      "endTime": "13:45",
+      "description": "特典会 (G卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_g02",
+      "groupName": "BELLRING少女ハート",
+      "venue": "草ぶえの丘",
+      "tableArea": "G卓",
+      "startTime": "15:10",
+      "endTime": "16:10",
+      "description": "特典会 (G卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_g03",
+      "groupName": "二丁目の魁カミングアウト",
+      "venue": "草ぶえの丘",
+      "tableArea": "G卓",
+      "startTime": "16:30",
+      "endTime": "17:30",
+      "description": "特典会 (G卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_g04",
+      "groupName": "KAMAITACI",
+      "venue": "草ぶえの丘",
+      "tableArea": "G卓",
+      "startTime": "17:35",
+      "endTime": "18:35",
+      "description": "特典会 (G卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_h01",
+      "groupName": "selfish",
+      "venue": "草ぶえの丘",
+      "tableArea": "H卓",
+      "startTime": "12:45",
+      "endTime": "13:45",
+      "description": "特典会 (H卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_h02",
+      "groupName": "ponderosa may bloom",
+      "venue": "草ぶえの丘",
+      "tableArea": "H卓",
+      "startTime": "15:10",
+      "endTime": "16:10",
+      "description": "特典会 (H卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_h03",
+      "groupName": "さとりモンスター",
+      "venue": "草ぶえの丘",
+      "tableArea": "H卓",
+      "startTime": "16:30",
+      "endTime": "17:30",
+      "description": "特典会 (H卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_h04",
+      "groupName": "空想ロマンス",
+      "venue": "草ぶえの丘",
+      "tableArea": "H卓",
+      "startTime": "17:35",
+      "endTime": "18:35",
+      "description": "特典会 (H卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_i01",
+      "groupName": "hakanai",
+      "venue": "草ぶえの丘",
+      "tableArea": "I卓",
+      "startTime": "13:10",
+      "endTime": "14:10",
+      "description": "特典会 (I卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_i02",
+      "groupName": "Quubi",
+      "venue": "草ぶえの丘",
+      "tableArea": "I卓",
+      "startTime": "15:25",
+      "endTime": "16:25",
+      "description": "特典会 (I卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_i03",
+      "groupName": "PIGGS",
+      "venue": "草ぶえの丘",
+      "tableArea": "I卓",
+      "startTime": "17:35",
+      "endTime": "18:35",
+      "description": "特典会 (I卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_j01",
+      "groupName": "AIWO",
+      "venue": "草ぶえの丘",
+      "tableArea": "J卓",
+      "startTime": "13:10",
+      "endTime": "14:10",
+      "description": "特典会 (J卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_j02",
+      "groupName": "AFTERS",
+      "venue": "草ぶえの丘",
+      "tableArea": "J卓",
+      "startTime": "15:25",
+      "endTime": "16:25",
+      "description": "特典会 (J卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_j03",
+      "groupName": "猫の眼に宇宙",
+      "venue": "草ぶえの丘",
+      "tableArea": "J卓",
+      "startTime": "16:35",
+      "endTime": "17:35",
+      "description": "特典会 (J卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_j04",
+      "groupName": "I to U $CREAMing!!",
+      "venue": "草ぶえの丘",
+      "tableArea": "J卓",
+      "startTime": "17:50",
+      "endTime": "18:50",
+      "description": "特典会 (J卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_k01",
+      "groupName": "HIBANA",
+      "venue": "草ぶえの丘",
+      "tableArea": "K卓",
+      "startTime": "13:25",
+      "endTime": "14:25",
+      "description": "特典会 (K卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_k02",
+      "groupName": "YOLOZ",
+      "venue": "草ぶえの丘",
+      "tableArea": "K卓",
+      "startTime": "16:45",
+      "endTime": "17:45",
+      "description": "特典会 (K卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_l01",
+      "groupName": "Finally",
+      "venue": "草ぶえの丘",
+      "tableArea": "L卓",
+      "startTime": "13:40",
+      "endTime": "14:40",
+      "description": "特典会 (L卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_l02",
+      "groupName": "Drawry.",
+      "venue": "草ぶえの丘",
+      "tableArea": "L卓",
+      "startTime": "15:50",
+      "endTime": "16:50",
+      "description": "特典会 (L卓)",
+      "isStarred": false
+    },
+    {
+      "id": "kusanone_tokuten_l03",
+      "groupName": "airattic",
+      "venue": "草ぶえの丘",
+      "tableArea": "L卓",
+      "startTime": "16:55",
+      "endTime": "17:55",
+      "description": "特典会 (L卓)",
+      "isStarred": false
+    }
+  ],
+  "otherEvents": [
+    {
+      "id": "kusanone_finale_fireworks",
+      "title": "KUSANONE IDOL FESTIVAL 2026 FINALE 打ち上げ花火",
+      "startTime": "20:00",
+      "endTime": "20:30",
+      "venue": "草ぶえの丘",
+      "description": "FINALE 闭幕压轴烟花秀 (打ち上げ花火)",
+      "isStarred": false
+    }
+  ]
+}

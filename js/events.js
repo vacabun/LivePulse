@@ -65,6 +65,10 @@ class EventManager {
     return Array.from(set);
   }
 
+  getAllFestivals() {
+    return this.getFestivalSummaryList();
+  }
+
   getFestivalSummaryList() {
     const map = new Map();
     
@@ -376,6 +380,9 @@ class EventManager {
     }
 
     let incomingEvents = [];
+    // Monotonic counter so IDs are unique even within same millisecond tick
+    let _idSeq = 0;
+    const nextId = (prefix) => `${prefix}_${Date.now()}_${++_idSeq}`;
 
     // 1. Structured Festival Template schema: { festival, lives, tokutenkais, otherEvents }
     if (parsed && parsed.festival && (Array.isArray(parsed.lives) || Array.isArray(parsed.tokutenkais) || Array.isArray(parsed.otherEvents))) {
@@ -386,10 +393,10 @@ class EventManager {
 
       // Parse Lives
       if (Array.isArray(parsed.lives)) {
-        parsed.lives.forEach((l, idx) => {
+        parsed.lives.forEach((l) => {
           if (l.groupName || l.title) {
             incomingEvents.push({
-              id: l.id || `tpl_live_${Date.now()}_${idx}`,
+              id: l.id || nextId('tpl_live'),
               groupName: l.groupName || l.title,
               title: l.groupName || l.title,
               type: 'live',
@@ -401,7 +408,7 @@ class EventManager {
               startTime: l.startTime || '',
               endTime: l.endTime || '',
               description: l.description || '',
-              isStarred: l.isStarred !== undefined ? !!l.isStarred : true
+              isStarred: l.isStarred !== undefined ? !!l.isStarred : false
             });
           }
         });
@@ -409,10 +416,10 @@ class EventManager {
 
       // Parse Tokutenkais (one event per group)
       if (Array.isArray(parsed.tokutenkais)) {
-        parsed.tokutenkais.forEach((t, idx) => {
+        parsed.tokutenkais.forEach((t) => {
           if (t.groupName || t.title) {
             incomingEvents.push({
-              id: t.id || `tpl_tokuten_${Date.now()}_${idx}`,
+              id: t.id || nextId('tpl_tokuten'),
               groupName: t.groupName || t.title,
               title: t.groupName || t.title,
               type: 'tokuten',
@@ -424,7 +431,7 @@ class EventManager {
               startTime: t.startTime || '',
               endTime: t.endTime || '',
               description: t.description || '',
-              isStarred: t.isStarred !== undefined ? !!t.isStarred : true
+              isStarred: t.isStarred !== undefined ? !!t.isStarred : false
             });
           }
         });
@@ -432,11 +439,11 @@ class EventManager {
 
       // Parse Other Events
       if (Array.isArray(parsed.otherEvents)) {
-        parsed.otherEvents.forEach((o, idx) => {
+        parsed.otherEvents.forEach((o) => {
           const title = o.title || o.groupName;
           if (title) {
             incomingEvents.push({
-              id: o.id || `tpl_other_${Date.now()}_${idx}`,
+              id: o.id || nextId('tpl_other'),
               groupName: title,
               title: title,
               type: 'other',
@@ -466,10 +473,11 @@ class EventManager {
     const validEvents = [];
     incomingEvents.forEach((evt, idx) => {
       const groupName = evt.groupName || evt.title;
-      if (evt && typeof evt === 'object' && groupName && evt.date) {
+      // Accept events even if date is empty string; only reject if groupName is missing
+      if (evt && typeof evt === 'object' && groupName) {
         const type = evt.type || evt.category || 'live';
         validEvents.push({
-          id: evt.id || `imported_live_${Date.now()}_${idx}`,
+          id: evt.id || nextId('imported_live'),
           groupName: String(groupName).trim(),
           title: String(groupName).trim(),
           type: type,
@@ -477,7 +485,7 @@ class EventManager {
           parentEvent: String(evt.parentEvent || '拼盘演出活动').trim(),
           venue: String(evt.venue || '主舞台').trim(),
           tableArea: String(evt.tableArea || '').trim(),
-          date: String(evt.date).trim(),
+          date: String(evt.date || '').trim(),
           startTime: evt.startTime || '',
           endTime: evt.endTime || '',
           description: evt.description || '',
@@ -527,6 +535,50 @@ class EventManager {
         message: `合并导入完成：新增 ${addedCount} 条，更新 ${updatedCount} 条。`
       };
     }
+  }
+
+  updateFestivalFromJSON(json, preserveStarred = true) {
+    let parsed = json;
+    if (typeof json === 'string') {
+      try {
+        parsed = JSON.parse(json);
+      } catch (e) {
+        return { success: false, error: 'JSON 解析失败：' + e.message };
+      }
+    }
+
+    let festName = '';
+    if (parsed && parsed.festival && parsed.festival.name) {
+      festName = String(parsed.festival.name).trim();
+    } else if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].parentEvent) {
+      festName = String(parsed[0].parentEvent).trim();
+    } else if (parsed && Array.isArray(parsed.events) && parsed.events.length > 0 && parsed.events[0].parentEvent) {
+      festName = String(parsed.events[0].parentEvent).trim();
+    }
+
+    const starredGroupMap = new Map();
+    if (preserveStarred && festName) {
+      this.events
+        .filter(e => e.parentEvent === festName && e.isStarred)
+        .forEach(e => {
+          starredGroupMap.set(`${e.groupName}_${e.type}`, true);
+        });
+    }
+
+    if (festName) {
+      this.events = this.events.filter(e => e.parentEvent !== festName);
+    }
+
+    const res = this.importFromJSON(parsed, 'merge');
+    if (res.success && preserveStarred && festName && starredGroupMap.size > 0) {
+      this.events.forEach(e => {
+        if (e.parentEvent === festName && starredGroupMap.has(`${e.groupName}_${e.type}`)) {
+          e.isStarred = true;
+        }
+      });
+      this.saveToStorage(this.events);
+    }
+    return res;
   }
 }
 

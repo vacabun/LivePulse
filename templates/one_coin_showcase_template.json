@@ -17,7 +17,7 @@
       "startTime": "12:30",
       "endTime": "12:55",
       "description": "Live 舞台演出 (25分钟)",
-      "isStarred": true
+      "isStarred": false
     },
     {
       "id": "onecoin_live_2",
@@ -26,7 +26,7 @@
       "startTime": "12:55",
       "endTime": "13:20",
       "description": "Live 舞台演出 (25分钟)",
-      "isStarred": true
+      "isStarred": false
     },
     {
       "id": "onecoin_live_3",
@@ -35,7 +35,7 @@
       "startTime": "13:20",
       "endTime": "13:45",
       "description": "Live 舞台演出 (25分钟)",
-      "isStarred": true
+      "isStarred": false
     }
   ],
   "tokutenkais": [
@@ -47,7 +47,7 @@
       "startTime": "13:55",
       "endTime": "15:25",
       "description": "終演後物販・特典会",
-      "isStarred": true
+      "isStarred": false
     },
     {
       "id": "onecoin_tokuten_2",
@@ -57,7 +57,7 @@
       "startTime": "13:55",
       "endTime": "15:25",
       "description": "終演後物販・特典会",
-      "isStarred": true
+      "isStarred": false
     },
     {
       "id": "onecoin_tokuten_3",
@@ -67,7 +67,7 @@
       "startTime": "13:55",
       "endTime": "15:25",
       "description": "終演後物販・特典会",
-      "isStarred": true
+      "isStarred": false
     }
   ],
   "otherEvents": []

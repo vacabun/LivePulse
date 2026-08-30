@@ -8,49 +8,8 @@
  * Tab 3: ⚙️ 设置与备份 (Settings & Data Backup Center)
  */
 
-import { eventManager, CATEGORIES } from './events.js';
-import { i18n, SUPPORTED_LANGUAGES } from './i18n.js';
-
-const PRESET_TEMPLATES = {
-  onecoin: {
-    name: "ワンコインショーケース",
-    venue: "Spotify O-WEST",
-    date: "2026-09-05",
-    rawText: `ワンコインショーケース
-○日程 9.5（土）
-○会場 Spotify O-WEST
-○時間 開場12:00/開演12:30
-○タイムテーブル
-OPEN12:00/START12:30
-12:30〜12:55 Mirror,Mirror
-12:55〜13:20 AKANECLUB.
-13:20〜13:45 かすみ草とステラ
-13:55〜15:25 終演後物販・特典会`
-  },
-  summeridol: {
-    name: "SUMMER IDOL FES 2026",
-    venue: "瓦肆 VAS",
-    date: "2026-08-29",
-    rawText: `SUMMER IDOL FES 2026
-○日程 8.29
-○会場 瓦肆 VAS
-13:30〜14:00 Starry☆Sky
-14:05〜14:35 CyberPulse
-14:20〜15:30 Starry☆Sky (特典会 3号桌)
-14:40〜15:15 Lunar Mirage
-14:50〜15:50 CyberPulse (特典会 5号桌)`
-  },
-  anisong: {
-    name: "ANISONG NIGHT 2026",
-    venue: "MAO Livehouse",
-    date: "2026-08-29",
-    rawText: `ANISONG NIGHT 2026
-○日程 8.29
-○会場 MAO Livehouse
-16:30〜17:15 Neon Blossom
-17:30〜19:00 終演後物販・特典会`
-  }
-};
+import { eventManager, CATEGORIES } from './events.js?v=2.3';
+import { i18n, SUPPORTED_LANGUAGES } from './i18n.js?v=2.3';
 
 class CalendarApp {
   constructor() {
@@ -97,6 +56,9 @@ class CalendarApp {
     // Inspecting Festival
     this.currentInspectingFestival = null;
 
+    // Schedule Repository Hub State
+    this.initRepoState();
+
     // DOM Elements Cache
     this.dom = {
       // Bottom Navigation Tabs
@@ -112,28 +74,25 @@ class CalendarApp {
       calendarWeekdaysHeader: document.getElementById('calendarWeekdaysHeader'),
       themeToggleBtn: document.getElementById('themeToggleBtn'),
       themeIcon: document.getElementById('themeIcon'),
-      toastContainer: document.getElementById('toastContainer'),
       newEventBtn: document.getElementById('newEventBtn'),
-      mobileFabBtn: document.getElementById('mobileFabBtn'),
 
       // TAB 1: Events Directory DOM
       festivalsListContainer: document.getElementById('festivalsListContainer'),
+      openRepoHubBtn: document.getElementById('openRepoHubBtn'),
       importFestivalBtn: document.getElementById('importFestivalBtn'),
-      openTemplateModalBtn: document.getElementById('openTemplateModalBtn'),
-      quickSaveTemplateJsonBtn: document.getElementById('quickSaveTemplateJsonBtn'),
-      quickImportFeaturedTemplateBtn: document.getElementById('quickImportFeaturedTemplateBtn'),
       
-      // Template Modal DOM
-      templateModal: document.getElementById('templateModal'),
-      closeTemplateModalBtn: document.getElementById('closeTemplateModalBtn'),
-      presetTemplateSelect: document.getElementById('presetTemplateSelect'),
-      rawTimetableTextInput: document.getElementById('rawTimetableTextInput'),
-      parseTextBtn: document.getElementById('parseTextBtn'),
-      parsedItemCount: document.getElementById('parsedItemCount'),
-      parsedMetaSummary: document.getElementById('parsedMetaSummary'),
-      parsedItemsList: document.getElementById('parsedItemsList'),
-      saveTemplateJsonBtn: document.getElementById('saveTemplateJsonBtn'),
-      importParsedTemplateBtn: document.getElementById('importParsedTemplateBtn'),
+      // Schedule Repository Modal DOM
+      repoModal: document.getElementById('repoModal'),
+      closeRepoModalBtn: document.getElementById('closeRepoModalBtn'),
+      closeRepoModalFooterBtn: document.getElementById('closeRepoModalFooterBtn'),
+      repoSelectDropdown: document.getElementById('repoSelectDropdown'),
+      refreshRepoBtn: document.getElementById('refreshRepoBtn'),
+      addCustomRepoBtn: document.getElementById('addCustomRepoBtn'),
+      repoGithubLinkBtn: document.getElementById('repoGithubLinkBtn'),
+      repoSearchInput: document.getElementById('repoSearchInput'),
+      repoBatchImportBtn: document.getElementById('repoBatchImportBtn'),
+      repoSelectedCount: document.getElementById('repoSelectedCount'),
+      repoEventsListContainer: document.getElementById('repoEventsListContainer'),
 
       // Festival Inspect Modal DOM
       festivalInspectModal: document.getElementById('festivalInspectModal'),
@@ -143,6 +102,7 @@ class CalendarApp {
       closeFestivalInspectModalBtn: document.getElementById('closeFestivalInspectModalBtn'),
       festivalSelectAllBtn: document.getElementById('festivalSelectAllBtn'),
       festivalDeselectAllBtn: document.getElementById('festivalDeselectAllBtn'),
+      festivalDeleteThisBtn: document.getElementById('festivalDeleteThisBtn'),
       goToMyRouteFromInspectBtn: document.getElementById('goToMyRouteFromInspectBtn'),
 
       // TAB 2: My Route Timetable DOM
@@ -178,6 +138,8 @@ class CalendarApp {
       settingsSizeKB: document.getElementById('settingsSizeKB'),
       settingsExportJsonBtn: document.getElementById('settingsExportJsonBtn'),
       settingsExportIcsBtn: document.getElementById('settingsExportIcsBtn'),
+      settingsDownloadTemplateBtn: document.getElementById('settingsDownloadTemplateBtn'),
+      settingsOpenRepoHubBtn: document.getElementById('settingsOpenRepoHubBtn'),
       settingsFileDropzone: document.getElementById('settingsFileDropzone'),
       settingsImportFileInput: document.getElementById('settingsImportFileInput'),
       settingsDropzoneText: document.getElementById('settingsDropzoneText'),
@@ -204,12 +166,13 @@ class CalendarApp {
       eventStarredInput: document.getElementById('eventStarredInput'),
       eventDescInput: document.getElementById('eventDescInput'),
       deleteEventBtn: document.getElementById('deleteEventBtn'),
+      saveEventBtn: document.getElementById('saveEventBtn'),
 
       // Day Detail Modal
       dayDetailModal: document.getElementById('dayDetailModal'),
-      dayDetailTitle: document.getElementById('dayDetailTitle'),
-      dayEventsList: document.getElementById('dayEventsListContainer'),
       closeDayDetailModalBtn: document.getElementById('closeDayDetailModalBtn'),
+      dayDetailTitle: document.getElementById('dayDetailTitle'),
+      dayDetailEventsList: document.getElementById('dayDetailEventsList'),
       addDayEventBtn: document.getElementById('addDayEventBtn')
     };
 
@@ -230,7 +193,6 @@ class CalendarApp {
     this.bindTouchGestures();
     this.bindSettingsEvents();
     this.bindFestivalInspectEvents();
-    this.bindTemplateModalEvents();
   }
 
   /* --------------------------------------------------------------------------
@@ -268,16 +230,14 @@ class CalendarApp {
       this.dom.themeToggleBtn.setAttribute('aria-label', i18n.t('themeToggle'));
     }
 
-    if (this.dom.mobileFabBtn) {
-      this.dom.mobileFabBtn.title = i18n.t('btnAddEvent');
-      this.dom.mobileFabBtn.setAttribute('aria-label', i18n.t('btnAddEvent'));
-    }
-
     // 3. Tab 1: Events Directory Page
     const page1Title = document.querySelector('#page-events .page-title-group h2');
     if (page1Title) page1Title.textContent = i18n.t('eventsPageTitle');
     const page1Desc = document.querySelector('#page-events .page-title-group p');
     if (page1Desc) page1Desc.textContent = i18n.t('eventsPageDesc');
+
+    const btnRepoHubText = document.getElementById('btnRepoHubText');
+    if (btnRepoHubText) btnRepoHubText.textContent = i18n.t('btnRepoHub');
 
     if (this.dom.openTemplateModalBtn) {
       const sp = this.dom.openTemplateModalBtn.querySelector('span');
@@ -288,15 +248,28 @@ class CalendarApp {
       if (sp) sp.textContent = i18n.t('btnUploadJson');
       this.dom.importFestivalBtn.title = i18n.t('btnUploadJson');
     }
-    const featTag = document.querySelector('.template-featured-banner .featured-tag');
-    if (featTag) featTag.textContent = i18n.t('featuredTag');
-    const featH3 = document.querySelector('.template-featured-banner h3');
-    if (featH3) featH3.textContent = i18n.t('featuredTitle');
-    const featP = document.querySelector('.template-featured-banner p');
-    if (featP) featP.textContent = i18n.t('featuredDesc');
 
-    if (this.dom.quickSaveTemplateJsonBtn) this.dom.quickSaveTemplateJsonBtn.textContent = i18n.t('quickDownloadTemplate');
-    if (this.dom.quickImportFeaturedTemplateBtn) this.dom.quickImportFeaturedTemplateBtn.textContent = i18n.t('quickImportTemplate');
+    // Repo Modal Localization
+    const repoModalTitle = document.getElementById('repoModalTitleText');
+    if (repoModalTitle) repoModalTitle.textContent = i18n.t('repoModalTitle');
+    const repoModalSubtitle = document.getElementById('repoModalSubtitleText');
+    if (repoModalSubtitle) repoModalSubtitle.textContent = i18n.t('repoModalSubtitle');
+    const repoSelectLabel = document.getElementById('repoSelectLabel');
+    if (repoSelectLabel) repoSelectLabel.textContent = i18n.t('repoSelectLabel');
+    if (this.dom.addCustomRepoBtn) {
+      this.dom.addCustomRepoBtn.title = i18n.t('btnAddCustomRepo');
+      this.dom.addCustomRepoBtn.setAttribute('aria-label', i18n.t('btnAddCustomRepo'));
+    }
+    if (this.dom.refreshRepoBtn) {
+      this.dom.refreshRepoBtn.title = i18n.t('btnRefreshRepo');
+      this.dom.refreshRepoBtn.setAttribute('aria-label', i18n.t('btnRefreshRepo'));
+    }
+    if (this.dom.repoSearchInput) this.dom.repoSearchInput.placeholder = i18n.t('repoSearchPlaceholder');
+    const repoFooterTipText = document.getElementById('repoFooterTipText');
+    if (repoFooterTipText) repoFooterTipText.textContent = i18n.t('repoFooterTip');
+    const festDelThisText = document.getElementById('festivalDeleteThisBtnText');
+    if (festDelThisText) festDelThisText.textContent = i18n.t('btnDeleteFestivalShort') || '删除此拼盘';
+    this.updateBatchImportButton();
 
     // 4. Tab 2: My Route Timetable Page
     document.querySelectorAll('.view-btn').forEach(btn => {
@@ -373,6 +346,16 @@ class CalendarApp {
       if (desc) desc.textContent = i18n.t('exportIcsDesc');
     }
 
+    const settingsTemplateCardTitle = document.getElementById('settingsTemplateCardTitle');
+    if (settingsTemplateCardTitle) settingsTemplateCardTitle.textContent = i18n.t('settingsTemplateTitle');
+    const settingsTemplateCardDesc = document.getElementById('settingsTemplateCardDesc');
+    if (settingsTemplateCardDesc) settingsTemplateCardDesc.textContent = i18n.t('settingsTemplateDesc');
+
+    const settingsRepoCardTitle = document.getElementById('settingsRepoCardTitle');
+    if (settingsRepoCardTitle) settingsRepoCardTitle.textContent = i18n.t('settingsRepoTitle');
+    const settingsRepoCardDesc = document.getElementById('settingsRepoCardDesc');
+    if (settingsRepoCardDesc) settingsRepoCardDesc.textContent = i18n.t('settingsRepoDesc');
+
     const importSectionTitle = document.querySelector('#settingsFileDropzone')?.closest('.settings-card')?.querySelector('.settings-card-title span');
     if (importSectionTitle) importSectionTitle.textContent = i18n.t('importCardTitle');
 
@@ -398,22 +381,6 @@ class CalendarApp {
     });
 
     // 7. Modals
-    // Template Modal
-    const templateModalTitle = document.querySelector('#templateModal .modal-header h2');
-    if (templateModalTitle) templateModalTitle.textContent = i18n.t('templateModalTitle');
-    const templateModalSubtitle = document.querySelector('#templateModal .festival-modal-subtitle');
-    if (templateModalSubtitle) templateModalSubtitle.textContent = i18n.t('templateModalSubtitle');
-    const presetLabel = document.querySelector('label[for="presetTemplateSelect"]');
-    if (presetLabel) presetLabel.textContent = i18n.t('labelPresetTemplate');
-    const rawTextLabel = document.querySelector('label[for="rawTimetableTextInput"]');
-    if (rawTextLabel) rawTextLabel.textContent = i18n.t('labelRawText');
-    if (this.dom.parseTextBtn) this.dom.parseTextBtn.textContent = i18n.t('btnReparseText');
-    if (this.dom.rawTimetableTextInput) this.dom.rawTimetableTextInput.placeholder = i18n.t('rawTextPlaceholder');
-    const previewHeaderH4 = document.querySelector('.parsed-preview-box .preview-header h4');
-    if (previewHeaderH4) previewHeaderH4.innerHTML = `${i18n.t('parsedPreviewTitle', { count: `<span id="parsedItemCount">${this.dom.parsedItemCount ? this.dom.parsedItemCount.textContent : '0'}</span>` })}`;
-    if (this.dom.saveTemplateJsonBtn) this.dom.saveTemplateJsonBtn.textContent = i18n.t('btnSaveTemplateJson');
-    if (this.dom.importParsedTemplateBtn) this.dom.importParsedTemplateBtn.textContent = i18n.t('btnImportParsedTemplate');
-
     // Festival Inspect Modal
     if (this.dom.festivalSelectAllBtn) this.dom.festivalSelectAllBtn.textContent = i18n.t('btnSelectAll');
     if (this.dom.festivalDeselectAllBtn) this.dom.festivalDeselectAllBtn.textContent = i18n.t('btnDeselectAll');
@@ -568,328 +535,653 @@ class CalendarApp {
   }
 
   /* --------------------------------------------------------------------------
-     Smart Timetable Text Parser Engine (Structured Schema Generation)
+     SCHEDULE REPOSITORY HUB (云端活动排程资源库)
      -------------------------------------------------------------------------- */
-  parseTimetableText(rawText) {
-    if (!rawText || !rawText.trim()) return null;
-
-    const lines = rawText.split('\n').map(l => l.trim()).filter(Boolean);
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const pad = (n) => String(n).padStart(2, '0');
-
-    let eventName = 'ワンコインショーケース';
-    let venue = 'Spotify O-WEST';
-    let dateStr = `${currentYear}-09-05`;
-    let openTime = '';
-    let overallStartTime = '';
-    let overallEndTime = '';
-
-    // 1. Extract Event Title
-    if (lines.length > 0) {
-      const firstLine = lines[0];
-      if (!firstLine.startsWith('○') && !firstLine.startsWith('【') && !firstLine.includes('：') && !firstLine.includes(':')) {
-        eventName = firstLine.replace(/^[#★◆■\s]+/, '').trim();
-      }
+  initRepoState() {
+    this.currentRepo = 'vacabun/LivePulse-Schedule';
+    try {
+      this.customRepos = JSON.parse(localStorage.getItem('livepulse_custom_repos') || '[]');
+    } catch (e) {
+      this.customRepos = [];
     }
-
-    // 2. Extract Venue, Date, Open/Start Times from metadata lines
-    lines.forEach(line => {
-      // Venue
-      if (line.match(/(?:会場|会场|Venue|地点|場所)[：:\s]*(.+)/i)) {
-        const m = line.match(/(?:会場|会场|Venue|地点|場所)[：:\s]*(.+)/i);
-        if (m && m[1]) venue = m[1].trim();
-      } else if (line.includes('@') && !line.includes(':')) {
-        const parts = line.split('@');
-        if (parts[1]) venue = parts[1].trim();
-      }
-
-      // Date
-      if (line.match(/(?:日程|日期|Date)[：:\s]*(.+)/i)) {
-        const dateRaw = line.match(/(?:日程|日期|Date)[：:\s]*(.+)/i)[1];
-        const dateMatch = dateRaw.match(/(?:(\d{4})[年\.\/-])?\s*(\d{1,2})[月\.\/-](\d{1,2})/);
-        if (dateMatch) {
-          const y = dateMatch[1] ? Number(dateMatch[1]) : currentYear;
-          const m = Number(dateMatch[2]);
-          const d = Number(dateMatch[3]);
-          dateStr = `${y}-${pad(m)}-${pad(d)}`;
-        }
-      }
-
-      // Open/Start Times
-      const openMatch = line.match(/(?:OPEN|開場|开场)\s*[:：]?\s*(\d{1,2}:\d{2})/i);
-      if (openMatch) openTime = openMatch[1];
-
-      const startMatch = line.match(/(?:START|開演|开演)\s*[:：]?\s*(\d{1,2}:\d{2})/i);
-      if (startMatch) overallStartTime = startMatch[1];
-    });
-
-    const lives = [];
-    const rawTokutenSlots = [];
-    const otherEvents = [];
-    const liveGroupNames = [];
-
-    const timeRangeRegex = /(\d{1,2}:\d{2})\s*(?:〜|~|-|–|—|到)\s*(\d{1,2}:\d{2})\s*(.+)/;
-
-    lines.forEach((line, idx) => {
-      const match = line.match(timeRangeRegex);
-      if (match) {
-        const start = match[1];
-        const end = match[2];
-        const rawTitle = match[3].trim();
-
-        if (!overallStartTime && (!openTime || start >= openTime)) {
-          overallStartTime = start;
-        }
-        overallEndTime = end;
-
-        // Categorize
-        if (rawTitle.match(/(?:特典|物販|物贩|握手|チェキ|合影|サイン|サイン会|交流)/i)) {
-          rawTokutenSlots.push({
-            title: rawTitle,
-            startTime: start,
-            endTime: end,
-            lineIdx: idx
-          });
-        } else if (rawTitle.match(/(?:OPEN|START|開場|開演|换场|転換|转场|休憩|开场|开演|交通|集合)/i)) {
-          otherEvents.push({
-            id: `tpl_other_${idx}`,
-            title: rawTitle,
-            startTime: start,
-            endTime: end,
-            venue: venue,
-            description: '',
-            isStarred: false
-          });
-        } else {
-          // Live Performance Item
-          const groupName = rawTitle.replace(/[\(（].*?(?:Live|演出).*?[\)）]/gi, '').trim();
-          liveGroupNames.push(groupName);
-
-          lives.push({
-            id: `tpl_live_${idx}`,
-            groupName: groupName,
-            stage: venue,
-            startTime: start,
-            endTime: end,
-            description: `Live 舞台演出 (${start} ~ ${end})`,
-            isStarred: true
-          });
-        }
-      }
-    });
-
-    // 3. Process Tokutenkai: if joint/all-group tokutenkai, generate individual event per live group!
-    const tokutenkais = [];
-    rawTokutenSlots.forEach((slot, sIdx) => {
-      const isJoint = slot.title.match(/(?:終演後|全出演|全体|全员|各组|各團|一斉)/i) || (liveGroupNames.length > 0 && !liveGroupNames.some(g => slot.title.includes(g)));
-
-      if (isJoint && liveGroupNames.length > 0) {
-        liveGroupNames.forEach((groupName, gIdx) => {
-          tokutenkais.push({
-            id: `tpl_tokuten_${sIdx}_${gIdx}`,
-            groupName: groupName,
-            venue: venue,
-            tableArea: '',
-            startTime: slot.startTime,
-            endTime: slot.endTime,
-            description: `${slot.title} (拍立得合影/签名交流)`,
-            isStarred: true
-          });
-        });
-      } else {
-        // Individual group specified
-        const matchedGroup = liveGroupNames.find(g => slot.title.includes(g)) || slot.title;
-        tokutenkais.push({
-          id: `tpl_tokuten_${sIdx}`,
-          groupName: matchedGroup,
-          venue: venue,
-          tableArea: '',
-          startTime: slot.startTime,
-          endTime: slot.endTime,
-          description: slot.title,
-          isStarred: true
-        });
-      }
-    });
-
-    return {
-      version: "2.0",
-      festival: {
-        name: eventName,
-        venue: venue,
-        date: dateStr,
-        openTime: openTime || '12:00',
-        startTime: overallStartTime || '12:30',
-        endTime: overallEndTime || '15:25',
-        description: `${eventName} @ ${venue}`
-      },
-      lives,
-      tokutenkais,
-      otherEvents
-    };
+    this.cachedRepoEvents = [];
+    this.selectedRepoPaths = new Set();
   }
 
-  /* --------------------------------------------------------------------------
-     Template Modal & Quick Actions
-     -------------------------------------------------------------------------- */
-  openTemplateModal(presetKey = 'onecoin') {
-    if (this.dom.presetTemplateSelect) {
-      this.dom.presetTemplateSelect.value = presetKey;
-    }
-    const preset = PRESET_TEMPLATES[presetKey] || PRESET_TEMPLATES.onecoin;
-    if (this.dom.rawTimetableTextInput) {
-      this.dom.rawTimetableTextInput.value = preset.rawText;
-    }
-    this.executeTextParse();
-    this.dom.templateModal.classList.add('active');
-  }
-
-  closeTemplateModal() {
-    this.dom.templateModal.classList.remove('active');
-  }
-
-  executeTextParse() {
-    const raw = this.dom.rawTimetableTextInput.value;
-    const parsed = this.parseTimetableText(raw);
-    this.currentParsedTemplate = parsed;
-
-    const totalCount = (parsed?.lives?.length || 0) + (parsed?.tokutenkais?.length || 0) + (parsed?.otherEvents?.length || 0);
-
-    if (!parsed || totalCount === 0) {
-      if (this.dom.parsedItemCount) this.dom.parsedItemCount.textContent = '0';
-      if (this.dom.parsedMetaSummary) this.dom.parsedMetaSummary.textContent = '';
-      if (this.dom.parsedItemsList) {
-        this.dom.parsedItemsList.innerHTML = `<div class="empty-day-state" style="padding: 1rem;"><p>${i18n.t('emptyEventsTitle')}</p></div>`;
-      }
-      if (this.dom.importParsedTemplateBtn) this.dom.importParsedTemplateBtn.disabled = true;
-      if (this.dom.saveTemplateJsonBtn) this.dom.saveTemplateJsonBtn.disabled = true;
-      return;
-    }
-
-    if (this.dom.parsedItemCount) this.dom.parsedItemCount.textContent = totalCount;
-    if (this.dom.parsedMetaSummary) {
-      this.dom.parsedMetaSummary.textContent = `📅 ${parsed.festival.date} · 📍 ${parsed.festival.venue} (${parsed.festival.openTime ? 'OPEN ' + parsed.festival.openTime + ' / ' : ''}START ${parsed.festival.startTime} ~ END ${parsed.festival.endTime})`;
-    }
-
-    if (this.dom.parsedItemsList) {
-      this.dom.parsedItemsList.innerHTML = '';
-
-      // Render Lives
-      parsed.lives.forEach(l => {
-        const item = document.createElement('div');
-        item.className = 'parsed-item-card cat-live';
-        item.innerHTML = `
-          <div>
-            <strong>${this.escapeHtml(l.groupName)}</strong>
-            <span style="font-size: 0.72rem; opacity: 0.8; margin-left: 6px;">🕒 ${l.startTime} ~ ${l.endTime}</span>
-          </div>
-          <span class="time-event-type-badge">${this.getTypeBadge('live')}</span>
-        `;
-        this.dom.parsedItemsList.appendChild(item);
-      });
-
-      // Render Tokutenkais (one per group)
-      parsed.tokutenkais.forEach(t => {
-        const item = document.createElement('div');
-        item.className = 'parsed-item-card cat-tokuten';
-        item.innerHTML = `
-          <div>
-            <strong>${this.escapeHtml(t.groupName)}</strong>
-            <span style="font-size: 0.72rem; opacity: 0.8; margin-left: 6px;">🕒 ${t.startTime} ~ ${t.endTime}</span>
-          </div>
-          <span class="time-event-type-badge">${this.getTypeBadge('tokuten')}</span>
-        `;
-        this.dom.parsedItemsList.appendChild(item);
-      });
-
-      // Render Other Events
-      parsed.otherEvents.forEach(o => {
-        const item = document.createElement('div');
-        item.className = 'parsed-item-card cat-other';
-        item.innerHTML = `
-          <div>
-            <strong>${this.escapeHtml(o.title)}</strong>
-            <span style="font-size: 0.72rem; opacity: 0.8; margin-left: 6px;">🕒 ${o.startTime} ~ ${o.endTime}</span>
-          </div>
-          <span class="time-event-type-badge">${this.getTypeBadge('other')}</span>
-        `;
-        this.dom.parsedItemsList.appendChild(item);
-      });
-    }
-
-    if (this.dom.importParsedTemplateBtn) this.dom.importParsedTemplateBtn.disabled = false;
-    if (this.dom.saveTemplateJsonBtn) this.dom.saveTemplateJsonBtn.disabled = false;
-  }
-
-  saveParsedTemplateAsJsonFile() {
-    if (!this.currentParsedTemplate) {
-      this.showToast('No valid template data', 'error');
-      return;
-    }
-    const jsonStr = JSON.stringify(this.currentParsedTemplate, null, 2);
-    const safeName = (this.currentParsedTemplate.festival?.name || 'event_template').replace(/[\s\/\\]+/g, '_');
-    this.downloadFile(jsonStr, `${safeName}_template.json`, 'application/json;charset=utf-8');
-    this.showToast(i18n.t('toastExportJson'), 'success');
-  }
-
-  importParsedTemplateDirectly() {
-    if (!this.currentParsedTemplate) {
-      this.showToast('No schedules to import', 'error');
-      return;
-    }
-    const totalCount = (this.currentParsedTemplate?.lives?.length || 0) + (this.currentParsedTemplate?.tokutenkais?.length || 0) + (this.currentParsedTemplate?.otherEvents?.length || 0);
-    const jsonStr = JSON.stringify(this.currentParsedTemplate);
-    const result = eventManager.importFromJSON(jsonStr, 'merge');
-    if (result.success) {
-      this.showToast(i18n.t('toastImportTemplateSuccess', { name: this.currentParsedTemplate.festival.name, count: totalCount }), 'success');
-      this.updateParentEventDropdown();
-      this.closeTemplateModal();
-      this.renderFestivalsDirectory();
-      this.renderView();
+  openRepoModal() {
+    this.updateRepoDropdown();
+    if (this.cachedRepoEvents.length === 0) {
+      this.fetchRepositoryEvents(this.currentRepo);
     } else {
-      this.showToast(result.error, 'error');
+      this.renderRepoEventsList();
+    }
+    this.dom.repoModal?.classList.add('active');
+  }
+
+  closeRepoModal() {
+    this.dom.repoModal?.classList.remove('active');
+  }
+
+  updateRepoDropdown() {
+    if (!this.dom.repoSelectDropdown) return;
+    this.dom.repoSelectDropdown.innerHTML = '';
+
+    // Official option
+    const officialOpt = document.createElement('option');
+    officialOpt.value = 'vacabun/LivePulse-Schedule';
+    officialOpt.textContent = `🌟 ${i18n.t('repoOfficialName') || 'vacabun/LivePulse-Schedule'}`;
+    this.dom.repoSelectDropdown.appendChild(officialOpt);
+
+    // Custom repos
+    this.customRepos.forEach(repo => {
+      const opt = document.createElement('option');
+      opt.value = repo;
+      opt.textContent = `🛠️ ${repo}`;
+      this.dom.repoSelectDropdown.appendChild(opt);
+    });
+
+    this.dom.repoSelectDropdown.value = this.currentRepo;
+    if (this.dom.repoGithubLinkBtn) {
+      this.dom.repoGithubLinkBtn.href = `https://github.com/${this.currentRepo}`;
     }
   }
 
-  bindTemplateModalEvents() {
-    this.dom.openTemplateModalBtn?.addEventListener('click', () => this.openTemplateModal('onecoin'));
-    this.dom.closeTemplateModalBtn?.addEventListener('click', () => this.closeTemplateModal());
-    this.dom.templateModal?.addEventListener('click', (e) => {
-      if (e.target === this.dom.templateModal) this.closeTemplateModal();
+  extractJsonFilesFromJsdelivrTree(treeNode, prefix = '') {
+    let results = [];
+    if (!treeNode) return results;
+    const files = treeNode.files || [];
+    for (const item of files) {
+      const currentPath = prefix ? `${prefix}/${item.name}` : item.name;
+      if (item.type === 'file' && item.name.endsWith('.json') && !item.name.startsWith('.') && !item.name.includes('package') && !item.name.includes('tsconfig')) {
+        results.push({ path: currentPath, name: item.name });
+      } else if (item.type === 'directory' && Array.isArray(item.files)) {
+        results = results.concat(this.extractJsonFilesFromJsdelivrTree(item, currentPath));
+      }
+    }
+    return results;
+  }
+
+  async fetchRepositoryEvents(repoSlug = this.currentRepo) {
+    this.currentRepo = repoSlug;
+    if (this.dom.repoGithubLinkBtn) {
+      this.dom.repoGithubLinkBtn.href = `https://github.com/${repoSlug}`;
+    }
+    if (this.dom.repoEventsListContainer) {
+      this.dom.repoEventsListContainer.innerHTML = `
+        <div class="repo-loading-state">
+          <div class="repo-spinner"></div>
+          <p>${i18n.t('repoLoadingText')}</p>
+        </div>
+      `;
+    }
+
+    this.selectedRepoPaths.clear();
+    this.updateBatchImportButton();
+
+    let files = [];
+
+    // Strategy 1: Try jsdelivr Data API (High performance, global CDN, no rate limit)
+    try {
+      const jsdUrl = `https://data.jsdelivr.net/v1/packages/gh/${repoSlug}@main?structure=tree`;
+      const jsdRes = await fetch(jsdUrl);
+      if (jsdRes.ok) {
+        const jsdData = await jsdRes.json();
+        files = this.extractJsonFilesFromJsdelivrTree(jsdData);
+      }
+    } catch (e) {
+      console.warn('jsdelivr tree API fetch failed, attempting GitHub API...', e);
+    }
+
+    // Strategy 2: Try GitHub Trees API if jsdelivr returned nothing
+    if (!files || files.length === 0) {
+      try {
+        let fetchUrl = `https://api.github.com/repos/${repoSlug}/git/trees/main?recursive=1`;
+        let ghRes = await fetch(fetchUrl);
+        if (!ghRes.ok) {
+          fetchUrl = `https://api.github.com/repos/${repoSlug}/git/trees/master?recursive=1`;
+          ghRes = await fetch(fetchUrl);
+        }
+        if (ghRes.ok) {
+          const data = await ghRes.json();
+          if (data.tree && Array.isArray(data.tree)) {
+            files = data.tree
+              .filter(item => item.type === 'blob' && item.path.endsWith('.json') && !item.path.startsWith('.') && !item.path.includes('package') && !item.path.includes('tsconfig'))
+              .map(item => ({ path: item.path, name: item.path.split('/').pop() }));
+          }
+        }
+      } catch (e) {
+        console.warn('GitHub API tree fetch failed:', e);
+      }
+    }
+
+    // Strategy 3: Built-in official repository fallback list if both network APIs are blocked
+    if ((!files || files.length === 0) && repoSlug === 'vacabun/LivePulse-Schedule') {
+      files = [
+        { path: 'events/2026/09/05/2026-09-05_ワンコインショーケース.json', name: '2026-09-05_ワンコインショーケース.json', venue: 'Spotify O-WEST', lineup: 'Mirror,Mirror / AKANECLUB. / かすみ草とステラ' },
+        { path: 'events/2026/09/05/2026-09-05_α＋_presents「第2回合同壮行会」＜夜の部＞.json', name: '2026-09-05_α＋_presents「第2回合同壮行会」＜夜の部＞.json', venue: '渋谷 近未来会館', lineup: 'α＋ / Starry☆Sky / CyberPulse' },
+        { path: 'events/2026/09/06/2026-09-06_くさのねアイドルフェスティバル2026.json', name: '2026-09-06_くさのねアイドルフェスティバル2026.json', venue: '草ぶえの丘 (千葉県佐仓市)', lineup: 'かすみ草とステラ / タイトル未定 / 手羽先センセーション / CYNHN' }
+      ];
+    }
+
+    if (!files || files.length === 0) {
+      this.cachedRepoEvents = [];
+      this.renderRepoEventsList();
+      return;
+    }
+
+    // Sort files by path (chronological descending)
+    files.sort((a, b) => b.path.localeCompare(a.path));
+
+    const parsedEvents = [];
+    for (const file of files) {
+      const rawFileName = file.name ? file.name.replace(/\.json$/i, '') : file.path.split('/').pop().replace(/\.json$/i, '');
+      const dateMatch = rawFileName.match(/^(\d{4}-\d{2}-\d{2})_(.*)$/);
+      let extractedDate = dateMatch ? dateMatch[1] : '';
+      let extractedName = dateMatch ? dateMatch[2] : rawFileName;
+
+      let fallbackVenue = file.venue || '';
+      let fallbackLineup = file.lineup || '';
+
+      if (!fallbackVenue) {
+        if (file.path.includes('ワンコイン')) fallbackVenue = 'Spotify O-WEST';
+        else if (file.path.includes('壮行会')) fallbackVenue = '渋谷 近未来会館';
+        else if (file.path.includes('くさのね')) fallbackVenue = '草ぶえの丘 (千葉県佐倉市)';
+      }
+
+      if (!fallbackLineup) {
+        if (file.path.includes('ワンコイン')) fallbackLineup = 'Mirror,Mirror / AKANECLUB. / かすみ草とステラ';
+        else if (file.path.includes('壮行会')) fallbackLineup = 'α＋ / Starry☆Sky / CyberPulse';
+        else if (file.path.includes('くさのね')) fallbackLineup = 'かすみ草とステラ / タイトル未定 / 手羽先センセーション / CYNHN';
+      }
+
+      parsedEvents.push({
+        path: file.path,
+        name: extractedName,
+        date: extractedDate,
+        venue: fallbackVenue,
+        lineup: fallbackLineup,
+        rawContent: null,
+        isLoaded: Boolean(fallbackVenue && fallbackLineup)
+      });
+    }
+
+    this.cachedRepoEvents = parsedEvents;
+    this.renderRepoEventsList();
+
+    // Async prefetch details in background
+    this.prefetchRepoDetails(parsedEvents.slice(0, 20), repoSlug);
+    this.showToast(i18n.t('toastRepoLoaded', { count: parsedEvents.length }), 'info');
+  }
+
+  async fetchFromMultiCdn(repoSlug, branch, path) {
+    const ts = Date.now();
+    const urls = [
+      `https://raw.githubusercontent.com/${repoSlug}/${branch}/${encodeURIComponent(path).replace(/%2F/g, '/')}?t=${ts}`,
+      `https://fastly.jsdelivr.net/gh/${repoSlug}@${branch}/${encodeURI(path)}?t=${ts}`,
+      `https://cdn.jsdelivr.net/gh/${repoSlug}@${branch}/${encodeURI(path)}?t=${ts}`,
+      `https://gcore.jsdelivr.net/gh/${repoSlug}@${branch}/${encodeURI(path)}?t=${ts}`,
+      `https://testingcf.jsdelivr.net/gh/${repoSlug}@${branch}/${encodeURI(path)}?t=${ts}`,
+      `https://raw.gitmirror.com/${repoSlug}/${branch}/${encodeURIComponent(path).replace(/%2F/g, '/')}`
+    ];
+
+    for (const u of urls) {
+      try {
+        const res = await fetch(u);
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch (e) {}
+    }
+
+    // Local fallback if path matches known official sample templates
+    if (path.includes('ワンコインショーケース')) {
+      try {
+        const res = await fetch('templates/one_coin_showcase_template.json');
+        if (res.ok) return await res.json();
+      } catch (e) {}
+      return {
+        version: "2.0",
+        festival: { name: "ワンコインショーケース", venue: "Spotify O-WEST", date: "2026-09-05", openTime: "12:00", startTime: "12:30", endTime: "15:25", description: "ワンコインショーケース @ Spotify O-WEST" },
+        lives: [
+          { id: "fallback_1", groupName: "Mirror,Mirror", stage: "Spotify O-WEST 主舞台", startTime: "12:30", endTime: "12:55", isStarred: false },
+          { id: "fallback_2", groupName: "AKANECLUB.", stage: "Spotify O-WEST 主舞台", startTime: "12:55", endTime: "13:20", isStarred: false },
+          { id: "fallback_3", groupName: "かすみ草とステラ", stage: "Spotify O-WEST 主舞台", startTime: "13:20", endTime: "13:45", isStarred: false }
+        ],
+        tokutenkais: [
+          { id: "fallback_t1", groupName: "Mirror,Mirror", venue: "Spotify O-WEST", tableArea: "1号卓", startTime: "13:55", endTime: "15:25", isStarred: false },
+          { id: "fallback_t2", groupName: "AKANECLUB.", venue: "Spotify O-WEST", tableArea: "2号卓", startTime: "13:55", endTime: "15:25", isStarred: false },
+          { id: "fallback_t3", groupName: "かすみ草とステラ", venue: "Spotify O-WEST", tableArea: "3号卓", startTime: "13:55", endTime: "15:25", isStarred: false }
+        ],
+        otherEvents: []
+      };
+    }
+
+    if (path.includes('壮行会')) {
+      return {
+        version: "2.0",
+        festival: { name: "α＋ presents「第2回合同壮行会」＜夜の部＞", venue: "渋谷 近未来会館", date: "2026-09-05", openTime: "17:30", startTime: "18:00", endTime: "21:30", description: "α＋ presents「第2回合同壮行会」" },
+        lives: [
+          { id: "soukou_1", groupName: "Starry☆Sky", stage: "近未来会館 舞台", startTime: "18:00", endTime: "18:30", isStarred: false },
+          { id: "soukou_2", groupName: "CyberPulse", stage: "近未来会館 舞台", startTime: "18:35", endTime: "19:05", isStarred: false },
+          { id: "soukou_3", groupName: "α＋", stage: "近未来会館 舞台", startTime: "19:10", endTime: "19:50", isStarred: false }
+        ],
+        tokutenkais: [
+          { id: "soukou_t1", groupName: "Starry☆Sky", venue: "近未来会館", tableArea: "1号卓", startTime: "20:00", endTime: "21:30", isStarred: false },
+          { id: "soukou_t2", groupName: "CyberPulse", venue: "近未来会館", tableArea: "2号卓", startTime: "20:00", endTime: "21:30", isStarred: false },
+          { id: "soukou_t3", groupName: "α＋", venue: "近未来会館", tableArea: "3号卓", startTime: "20:00", endTime: "21:30", isStarred: false }
+        ],
+        otherEvents: []
+      };
+    }
+
+    if (path.includes('くさのね')) {
+      try {
+        const res = await fetch('templates/2026-09-06_くさのねアイドルフェスティバル2026.json');
+        if (res.ok) return await res.json();
+      } catch (e) {}
+    }
+
+    throw new Error(`Failed to load ${path} from all CDN mirrors`);
+  }
+
+  async prefetchRepoDetails(items, repoSlug) {
+    const branch = 'main';
+    for (const item of items) {
+      try {
+        const json = await this.fetchFromMultiCdn(repoSlug, branch, item.path);
+        if (json) {
+          item.rawContent = json;
+          item.isLoaded = true;
+          if (json.festival) {
+            item.name = json.festival.name || item.name;
+            item.date = json.festival.date || item.date;
+            item.venue = json.festival.venue || item.venue;
+          }
+          if (Array.isArray(json.lives)) {
+            item.lineup = json.lives.map(l => l.groupName || l.title).filter(Boolean).join(' / ');
+          }
+        }
+      } catch (e) {
+        // ignore prefetch error
+      }
+    }
+    this.renderRepoEventsList();
+  }
+
+  async fetchSingleRepoContent(item, forceRefresh = false) {
+    if (item.rawContent && !forceRefresh) return item.rawContent;
+    const branch = 'main';
+    const content = await this.fetchFromMultiCdn(this.currentRepo, branch, item.path);
+    item.rawContent = content;
+    item.isLoaded = true;
+    return item.rawContent;
+  }
+
+  getRepoUpdatingText() {
+    const t = i18n.t('btnUpdating');
+    if (t && !t.toLowerCase().includes('btnupdate')) return t;
+    const lang = i18n.getLang ? i18n.getLang() : 'zh';
+    if (lang === 'ja') return '⏳ 更新中...';
+    if (lang === 'ko') return '⏳ 업데이트 중...';
+    if (lang === 'en') return '⏳ Updating...';
+    return '⏳ 更新中...';
+  }
+
+  getRepoImportingText() {
+    const t = i18n.t('btnImporting');
+    if (t && !t.toLowerCase().includes('btnimport')) return t;
+    const lang = i18n.getLang ? i18n.getLang() : 'zh';
+    if (lang === 'ja') return '⏳ インポート中...';
+    if (lang === 'ko') return '⏳ 가져오는 중...';
+    if (lang === 'en') return '⏳ Importing...';
+    return '⏳ 导入中...';
+  }
+
+  getRepoUpdatedSuccessText() {
+    const t = i18n.t('btnUpdatedSuccess');
+    if (t && !t.toLowerCase().includes('btnupdate')) return t;
+    const lang = i18n.getLang ? i18n.getLang() : 'zh';
+    if (lang === 'ja') return '✅ 更新完了';
+    if (lang === 'ko') return '✅ 업데이트 완료';
+    if (lang === 'en') return '✅ Updated!';
+    return '✅ 更新成功';
+  }
+
+  getRepoImportSuccessText() {
+    const t = i18n.t('btnImportSuccess');
+    if (t && !t.toLowerCase().includes('btnimport')) return t;
+    const lang = i18n.getLang ? i18n.getLang() : 'zh';
+    if (lang === 'ja') return '✅ インポート完了';
+    if (lang === 'ko') return '✅ 가져오기 완료';
+    if (lang === 'en') return '✅ Imported!';
+    return '✅ 导入成功';
+  }
+
+  getRepoUpdateScheduleText() {
+    const t = i18n.t('btnUpdateSchedule');
+    if (t && !t.toLowerCase().includes('btnupdate')) return t;
+    const lang = i18n.getLang ? i18n.getLang() : 'zh';
+    if (lang === 'ja') return '🔄 更新';
+    if (lang === 'ko') return '🔄 업데이트';
+    if (lang === 'en') return '🔄 Update';
+    return '🔄 更新活动';
+  }
+
+  getRepoImportScheduleText() {
+    const t = i18n.t('btnImportSchedule');
+    if (t && !t.toLowerCase().includes('btnimport')) return t;
+    const lang = i18n.getLang ? i18n.getLang() : 'zh';
+    if (lang === 'ja') return '📥 このイベントを取り込む';
+    if (lang === 'ko') return '📥 이 일정 가져오기';
+    if (lang === 'en') return '📥 Import Event';
+    return '📥 导入此活动';
+  }
+
+  renderRepoEventsList(eventsToRender = null) {
+    if (!this.dom.repoEventsListContainer) return;
+    const list = eventsToRender !== null ? eventsToRender : this.cachedRepoEvents;
+
+    if (list.length === 0) {
+      this.dom.repoEventsListContainer.innerHTML = `
+        <div class="repo-empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <p>${i18n.t('repoEmptyText')}</p>
+        </div>
+      `;
+      return;
+    }
+
+    this.dom.repoEventsListContainer.innerHTML = '';
+    const existingFestivalNames = eventManager.getParentEvents ? eventManager.getParentEvents() : [];
+    const existingFestivals = new Set(existingFestivalNames);
+
+    list.forEach(item => {
+      const card = document.createElement('div');
+      const isSelected = this.selectedRepoPaths.has(item.path);
+      // Match by exact name, or by substring (filename may contain festival name as suffix after date prefix)
+      const isAlreadyInLibrary = existingFestivals.has(item.name) ||
+        existingFestivalNames.some(name => item.name.includes(name) || name.includes(item.name));
+      card.className = `repo-event-card ${isSelected ? 'is-selected' : ''}`;
+
+
+      const dateBadge = item.date ? `<span class="meta-tag date-tag">📅 ${item.date}</span>` : '';
+      const venueBadge = item.venue ? `<span class="meta-tag venue-tag">📍 ${this.escapeHtml(item.venue)}</span>` : '';
+      const countBadge = item.lineup ? `<span class="meta-tag">👥 ${item.lineup.split('/').length} ${i18n.t('groupsCount') || '组'}</span>` : '';
+
+      const lineupText = item.lineup 
+        ? `<div class="repo-card-lineup">🎤 <strong>${i18n.t('lineupLabel') || '参演'}:</strong> ${this.escapeHtml(item.lineup)}</div>`
+        : `<div class="repo-card-lineup" style="color: var(--text-muted);">🎵 点击导入可同步包含 Live 与特典会的完整排程</div>`;
+
+      const updateBtnText = this.getRepoUpdateScheduleText();
+      const importBtnText = this.getRepoImportScheduleText();
+
+      const actionButtonsHtml = isAlreadyInLibrary
+        ? `
+          <button class="btn-primary repo-import-btn is-update" style="font-size: 0.78rem; padding: 0.4rem 0.85rem; border-radius: 8px;" title="${updateBtnText}">
+            ${updateBtnText}
+          </button>
+          <button class="btn-cancel repo-delete-btn" style="font-size: 0.78rem; padding: 0.4rem 0.65rem; border-radius: 8px; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);" title="${i18n.t('btnDeleteFromLocal') || '从本地删除'}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        `
+        : `
+          <button class="btn-primary repo-import-btn" style="font-size: 0.78rem; padding: 0.4rem 0.85rem; border-radius: 8px;">
+            ${importBtnText}
+          </button>
+        `;
+
+      card.innerHTML = `
+        <div class="repo-card-top">
+          <div class="repo-card-meta">
+            <div class="repo-tags-row">
+              ${dateBadge}
+              ${venueBadge}
+              ${countBadge}
+            </div>
+            <h4 class="repo-card-title">${this.escapeHtml(item.name)}</h4>
+            ${lineupText}
+          </div>
+        </div>
+
+        <div class="repo-card-actions">
+          <label class="repo-card-check-label">
+            <input type="checkbox" class="repo-item-checkbox" ${isSelected ? 'checked' : ''} data-path="${this.escapeHtml(item.path)}">
+            <span>${i18n.t('selectLabel') || '勾选'}</span>
+          </label>
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            ${actionButtonsHtml}
+          </div>
+        </div>
+      `;
+
+      // Checkbox event
+      const checkbox = card.querySelector('.repo-item-checkbox');
+      checkbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          this.selectedRepoPaths.add(item.path);
+          card.classList.add('is-selected');
+        } else {
+          this.selectedRepoPaths.delete(item.path);
+          card.classList.remove('is-selected');
+        }
+        this.updateBatchImportButton();
+      });
+
+      // Import / Update button event
+      const importBtn = card.querySelector('.repo-import-btn');
+      if (importBtn) {
+        importBtn.addEventListener('click', async () => {
+          importBtn.disabled = true;
+          importBtn.classList.add('is-loading');
+          importBtn.textContent = isAlreadyInLibrary
+            ? this.getRepoUpdatingText()
+            : this.getRepoImportingText();
+
+          try {
+            const content = await this.fetchSingleRepoContent(item, true);
+            const res = isAlreadyInLibrary
+              ? eventManager.updateFestivalFromJSON(content, true)
+              : eventManager.importFromJSON(content, 'merge');
+
+            if (res.success) {
+              const countInfo = ` (${res.count || 0} ${i18n.t('itemsCount') || '项'})`;
+              const msg = isAlreadyInLibrary
+                ? (i18n.t('toastRepoUpdateSuccess', { name: item.name }) + countInfo)
+                : (i18n.t('toastRepoImportSuccess', { name: item.name }) + countInfo);
+              this.showToast(msg, 'success');
+
+              importBtn.classList.remove('is-loading');
+              importBtn.classList.add('is-success');
+              importBtn.textContent = isAlreadyInLibrary
+                ? this.getRepoUpdatedSuccessText()
+                : this.getRepoImportSuccessText();
+              card.classList.add('is-updated-success');
+
+              this.updateParentEventDropdown();
+              this.renderFestivalsDirectory();
+              this.renderView();
+              existingFestivals.add(item.name);
+
+              setTimeout(() => {
+                this.renderRepoEventsList();
+              }, 1200);
+              return;
+            } else {
+              console.error('[RepoHub] Import failed:', res.error);
+              this.showToast(res.error || '导入失败', 'error');
+            }
+          } catch (e) {
+            console.error('[RepoHub] Exception:', e);
+            this.showToast(e.message || 'Import error', 'error');
+          }
+          importBtn.disabled = false;
+          importBtn.classList.remove('is-loading', 'is-success');
+          importBtn.textContent = isAlreadyInLibrary ? this.getRepoUpdateScheduleText() : this.getRepoImportScheduleText();
+        });
+      }
+
+      // Delete from local button event
+      const deleteBtn = card.querySelector('.repo-delete-btn');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm(i18n.t('confirmDeleteFestival', { name: item.name }))) {
+            eventManager.deleteFestival(item.name);
+            existingFestivals.delete(item.name);
+            this.showToast(i18n.t('toastFestivalDeleted'), 'info');
+            this.updateParentEventDropdown();
+            this.renderFestivalsDirectory();
+            this.renderView();
+            this.renderRepoEventsList();
+          }
+        });
+      }
+
+      this.dom.repoEventsListContainer.appendChild(card);
+    });
+  }
+
+  updateBatchImportButton() {
+    if (!this.dom.repoBatchImportBtn) return;
+    const count = this.selectedRepoPaths.size;
+    if (this.dom.repoSelectedCount) this.dom.repoSelectedCount.textContent = count;
+    const btnText = document.getElementById('btnBatchImportText');
+    if (btnText) btnText.textContent = i18n.t('btnBatchImport', { count });
+    this.dom.repoBatchImportBtn.disabled = count === 0;
+  }
+
+  async handleBatchImport() {
+    if (this.selectedRepoPaths.size === 0) return;
+    const batchBtn = this.dom.repoBatchImportBtn;
+    if (batchBtn) {
+      batchBtn.disabled = true;
+      batchBtn.classList.add('is-loading');
+    }
+    const btnText = document.getElementById('btnBatchImportText');
+    if (btnText) btnText.textContent = this.getRepoImportingText();
+
+    let importedCount = 0;
+    const paths = Array.from(this.selectedRepoPaths);
+
+    for (const path of paths) {
+      const item = this.cachedRepoEvents.find(e => e.path === path);
+      if (item) {
+        try {
+          const content = await this.fetchSingleRepoContent(item, true);
+          eventManager.importFromJSON(content, 'merge');
+          importedCount++;
+        } catch (e) {
+          console.warn('Batch import error for item:', path, e);
+        }
+      }
+    }
+
+    if (batchBtn && btnText) {
+      batchBtn.classList.remove('is-loading');
+      batchBtn.classList.add('is-success');
+      btnText.textContent = this.getRepoImportSuccessText();
+    }
+
+    this.showToast(i18n.t('toastRepoBatchSuccess', { count: importedCount }), 'success');
+    this.selectedRepoPaths.clear();
+    this.updateParentEventDropdown();
+    this.renderFestivalsDirectory();
+    this.renderView();
+
+    setTimeout(() => {
+      if (batchBtn) batchBtn.classList.remove('is-success');
+      this.updateBatchImportButton();
+      this.renderRepoEventsList();
+    }, 1200);
+  }
+
+  handleAddCustomRepo() {
+    const input = prompt(i18n.t('promptAddRepoUrl'), '');
+    if (!input || !input.trim()) return;
+
+    let slug = input.trim();
+    slug = slug.replace(/^https?:\/\/github\.com\//i, '').replace(/\/+$/, '');
+    const parts = slug.split('/');
+    if (parts.length < 2) {
+      alert('Invalid GitHub repository. Please format as: owner/repo');
+      return;
+    }
+    const cleanSlug = `${parts[0]}/${parts[1]}`;
+    if (!this.customRepos.includes(cleanSlug) && cleanSlug !== 'vacabun/LivePulse-Schedule') {
+      this.customRepos.push(cleanSlug);
+      localStorage.setItem('livepulse_custom_repos', JSON.stringify(this.customRepos));
+    }
+    this.currentRepo = cleanSlug;
+    this.updateRepoDropdown();
+    this.fetchRepositoryEvents(cleanSlug);
+  }
+
+  filterRepoEvents(query) {
+    if (!query || !query.trim()) {
+      this.renderRepoEventsList();
+      return;
+    }
+    const q = query.trim().toLowerCase();
+    const filtered = this.cachedRepoEvents.filter(e => {
+      return (e.name && e.name.toLowerCase().includes(q)) ||
+             (e.date && e.date.toLowerCase().includes(q)) ||
+             (e.venue && e.venue.toLowerCase().includes(q)) ||
+             (e.lineup && e.lineup.toLowerCase().includes(q));
+    });
+    this.renderRepoEventsList(filtered);
+  }
+
+  bindRepoModalEvents() {
+    this.dom.openRepoHubBtn?.addEventListener('click', () => this.openRepoModal());
+    this.dom.closeRepoModalBtn?.addEventListener('click', () => this.closeRepoModal());
+    this.dom.closeRepoModalFooterBtn?.addEventListener('click', () => this.closeRepoModal());
+    this.dom.repoModal?.addEventListener('click', (e) => {
+      if (e.target === this.dom.repoModal) this.closeRepoModal();
     });
 
-    this.dom.presetTemplateSelect?.addEventListener('change', (e) => {
-      const key = e.target.value;
-      const preset = PRESET_TEMPLATES[key];
-      if (preset && this.dom.rawTimetableTextInput) {
-        this.dom.rawTimetableTextInput.value = preset.rawText;
-        this.executeTextParse();
+    this.dom.repoSelectDropdown?.addEventListener('change', (e) => {
+      const selected = e.target.value;
+      if (selected) {
+        this.fetchRepositoryEvents(selected);
       }
     });
 
-    this.dom.parseTextBtn?.addEventListener('click', () => this.executeTextParse());
-    this.dom.saveTemplateJsonBtn?.addEventListener('click', () => this.saveParsedTemplateAsJsonFile());
-    this.dom.importParsedTemplateBtn?.addEventListener('click', () => this.importParsedTemplateDirectly());
-
-    // Quick Featured Actions on Banner
-    this.dom.quickSaveTemplateJsonBtn?.addEventListener('click', () => {
-      const parsed = this.parseTimetableText(PRESET_TEMPLATES.onecoin.rawText);
-      this.currentParsedTemplate = parsed;
-      this.saveParsedTemplateAsJsonFile();
+    this.dom.refreshRepoBtn?.addEventListener('click', async () => {
+      const btn = this.dom.refreshRepoBtn;
+      if (btn) {
+        btn.classList.add('is-refreshing');
+        btn.disabled = true;
+      }
+      try {
+        this.cachedRepoEvents = [];
+        await this.fetchRepositoryEvents(this.currentRepo);
+      } finally {
+        setTimeout(() => {
+          if (btn) {
+            btn.classList.remove('is-refreshing');
+            btn.disabled = false;
+          }
+        }, 600);
+      }
     });
 
-    this.dom.quickImportFeaturedTemplateBtn?.addEventListener('click', () => {
-      const parsed = this.parseTimetableText(PRESET_TEMPLATES.onecoin.rawText);
-      const totalCount = (parsed?.lives?.length || 0) + (parsed?.tokutenkais?.length || 0) + (parsed?.otherEvents?.length || 0);
-      const jsonStr = JSON.stringify(parsed);
-      const res = eventManager.importFromJSON(jsonStr, 'merge');
-      if (res.success) {
-        this.showToast(i18n.t('toastImportTemplateSuccess', { name: 'ワンコインショーケース', count: totalCount }), 'success');
-        this.updateParentEventDropdown();
-        this.renderFestivalsDirectory();
-        this.renderView();
-      }
+    this.dom.addCustomRepoBtn?.addEventListener('click', () => {
+      this.handleAddCustomRepo();
+    });
+
+    this.dom.repoSearchInput?.addEventListener('input', (e) => {
+      this.filterRepoEvents(e.target.value);
+    });
+
+    this.dom.repoBatchImportBtn?.addEventListener('click', () => {
+      this.handleBatchImport();
     });
   }
 
@@ -931,7 +1223,8 @@ class CalendarApp {
             <div class="festival-meta-tags">
               <span class="meta-tag date-tag">📅 ${this.escapeHtml(fest.dateRange)}</span>
               <span class="meta-tag venue-tag">📍 ${this.escapeHtml(fest.venues)}</span>
-              <span class="meta-tag">👥 ${fest.groupCount} ${i18n.t('itemsCount')}</span>
+              <span class="meta-tag">👥 ${fest.groupCount} ${i18n.t('groupsCount') || '组'}</span>
+              <span class="meta-tag">🎪 ${fest.totalEvents} ${i18n.t('itemsCount')}</span>
             </div>
           </div>
         </div>
@@ -950,11 +1243,29 @@ class CalendarApp {
           <button class="btn-inspect-schedule inspect-btn">
             🔍 ${i18n.t('btnInspectTimetable')}
           </button>
+          <button class="btn-delete-festival delete-fest-btn" title="${i18n.t('confirmDeleteFestival', { name: fest.name })}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>${i18n.t('btnDeleteFestivalShort') || '删除'}</span>
+          </button>
         </div>
       `;
 
       card.querySelector('.inspect-btn').addEventListener('click', () => {
         this.openFestivalInspectModal(fest.name);
+      });
+
+      card.querySelector('.delete-fest-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (confirm(i18n.t('confirmDeleteFestival', { name: fest.name }))) {
+          eventManager.deleteFestival(fest.name);
+          this.showToast(i18n.t('toastFestivalDeleted'), 'info');
+          this.updateParentEventDropdown();
+          this.renderFestivalsDirectory();
+          this.renderView();
+        }
       });
 
       this.dom.festivalsListContainer.appendChild(card);
@@ -1065,6 +1376,19 @@ class CalendarApp {
         this.showToast(i18n.t('toastAllDeselected', { festival: this.currentInspectingFestival }), 'info');
         const allEvents = eventManager.getEventsByParent(this.currentInspectingFestival);
         this.renderFestivalInspectTimeline(allEvents);
+      }
+    });
+
+    this.dom.festivalDeleteThisBtn?.addEventListener('click', () => {
+      if (this.currentInspectingFestival) {
+        if (confirm(i18n.t('confirmDeleteFestival', { name: this.currentInspectingFestival }))) {
+          eventManager.deleteFestival(this.currentInspectingFestival);
+          this.showToast(i18n.t('toastFestivalDeleted'), 'info');
+          this.closeFestivalInspectModal();
+          this.updateParentEventDropdown();
+          this.renderFestivalsDirectory();
+          this.renderView();
+        }
       }
     });
 
@@ -1473,9 +1797,6 @@ class CalendarApp {
   createTimeEventCard(evt, colIndex = 0, totalCols = 1) {
     const type = evt.type || evt.category || 'live';
     const isDayView = this.currentView === 'day';
-    const card = document.createElement('div');
-    card.className = `time-event-card cat-${type} ${evt.isStarred ? 'is-starred' : ''} ${isDayView ? 'is-day-view' : ''}`;
-
     let [startH, startM] = (evt.startTime || '12:00').split(':').map(Number);
     let [endH, endM] = (evt.endTime || `${Math.min(23, startH + 1)}:${startM || 0}`).split(':').map(Number);
 
@@ -1488,9 +1809,16 @@ class CalendarApp {
     let endMinutes = endH * 60 + endM;
     if (endMinutes <= startMinutes) endMinutes = startMinutes + 45;
 
-    const durationMinutes = Math.max(25, endMinutes - startMinutes);
+    const durationMinutes = Math.max(20, endMinutes - startMinutes);
     const topPx = (startMinutes / 60) * this.hourHeight;
     const heightPx = (durationMinutes / 60) * this.hourHeight - 2;
+
+    const isShort = durationMinutes < 45 || heightPx < 46;
+    const isExtraShort = durationMinutes <= 25 || heightPx < 28;
+    const isCompact = totalCols >= 3;
+
+    const card = document.createElement('div');
+    card.className = `time-event-card cat-${type} ${evt.isStarred ? 'is-starred' : ''} ${isDayView ? 'is-day-view' : ''} ${isShort ? 'is-short' : ''} ${isExtraShort ? 'is-extra-short' : ''} ${isCompact ? 'is-compact' : ''}`;
 
     const colWidthPct = (100 / totalCols);
     const colLeftPct = (colIndex * colWidthPct);
@@ -1733,7 +2061,50 @@ class CalendarApp {
       const icsContent = eventManager.exportToICS(true);
       const dateStr = new Date().toISOString().split('T')[0];
       this.downloadFile(icsContent, `livepulse_myroute_${dateStr}.ics`, 'text/calendar;charset=utf-8');
-      this.showToast('个人活动日历 (.ics) 已生成！可直接导入手机/系统日历', 'success');
+      this.showToast(i18n.t('toastExportIcs'), 'success');
+    });
+
+    this.dom.settingsDownloadTemplateBtn?.addEventListener('click', async () => {
+      try {
+        const resp = await fetch('templates/one_coin_showcase_template.json');
+        if (resp.ok) {
+          const text = await resp.text();
+          this.downloadFile(text, 'one_coin_showcase_template.json', 'application/json;charset=utf-8');
+          this.showToast(i18n.t('toastTemplateDownloaded'), 'success');
+          return;
+        }
+      } catch (err) {
+        console.warn('Fetch template file failed, generating fallback template:', err);
+      }
+      const sampleTemplate = {
+        version: "2.0",
+        festival: {
+          name: "ワンコインショーケース",
+          venue: "Spotify O-WEST",
+          date: "2026-09-05",
+          openTime: "12:00",
+          startTime: "12:30",
+          endTime: "15:25",
+          description: "ワンコインショーケース @ Spotify O-WEST"
+        },
+        lives: [
+          { id: "sample_live_1", groupName: "Mirror,Mirror", stage: "Spotify O-WEST 主舞台", startTime: "12:30", endTime: "12:55", description: "Live 舞台演出", isStarred: false },
+          { id: "sample_live_2", groupName: "AKANECLUB.", stage: "Spotify O-WEST 主舞台", startTime: "12:55", endTime: "13:20", description: "Live 舞台演出", isStarred: false },
+          { id: "sample_live_3", groupName: "かすみ草とステラ", stage: "Spotify O-WEST 主舞台", startTime: "13:20", endTime: "13:45", description: "Live 舞台演出", isStarred: false }
+        ],
+        tokutenkais: [
+          { id: "sample_tokuten_1", groupName: "Mirror,Mirror", venue: "Spotify O-WEST", tableArea: "1号卓", startTime: "13:55", endTime: "15:25", description: "終演後物販・特典会", isStarred: false },
+          { id: "sample_tokuten_2", groupName: "AKANECLUB.", venue: "Spotify O-WEST", tableArea: "2号卓", startTime: "13:55", endTime: "15:25", description: "終演後物販・特典会", isStarred: false },
+          { id: "sample_tokuten_3", groupName: "かすみ草とステラ", venue: "Spotify O-WEST", tableArea: "3号卓", startTime: "13:55", endTime: "15:25", description: "終演後物販・特典会", isStarred: false }
+        ],
+        otherEvents: []
+      };
+      this.downloadFile(JSON.stringify(sampleTemplate, null, 2), 'one_coin_showcase_template.json', 'application/json;charset=utf-8');
+      this.showToast(i18n.t('toastTemplateDownloaded'), 'success');
+    });
+
+    this.dom.settingsOpenRepoHubBtn?.addEventListener('click', () => {
+      this.openRepoModal();
     });
 
     this.dom.settingsFileDropzone?.addEventListener('click', () => {
@@ -2152,7 +2523,6 @@ class CalendarApp {
     this.dom.themeToggleBtn?.addEventListener('click', () => this.toggleTheme());
 
     this.dom.newEventBtn?.addEventListener('click', () => this.openNewEventModal());
-    this.dom.mobileFabBtn?.addEventListener('click', () => this.openNewEventModal());
     this.dom.closeEventModalBtn?.addEventListener('click', () => this.closeEventModal());
     this.dom.cancelEventModalBtn?.addEventListener('click', () => this.closeEventModal());
     this.dom.eventForm?.addEventListener('submit', (e) => this.handleSaveEvent(e));
@@ -2171,12 +2541,15 @@ class CalendarApp {
       if (e.target === this.dom.dayDetailModal) this.closeDayDetailModal();
     });
 
+    this.bindRepoModalEvents();
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         this.closeEventModal();
         this.closeDayDetailModal();
         this.closeFestivalInspectModal();
         this.closeTemplateModal();
+        this.closeRepoModal();
       }
     });
   }
